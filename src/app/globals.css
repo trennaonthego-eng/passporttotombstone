@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9fafb;
+  --foreground: #1f2937;
+  --color-tombstone-red: #dc143c;
+  --color-tombstone-navy: #003366;
+  --color-tombstone-gold: #d4af37;
+  --color-tombstone-dark: #1f2937;
+  --color-tombstone-light: #f9fafb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-tombstone-red: var(--color-tombstone-red);
+  --color-tombstone-navy: var(--color-tombstone-navy);
+  --color-tombstone-gold: var(--color-tombstone-gold);
+  --color-tombstone-dark: var(--color-tombstone-dark);
+  --color-tombstone-light: var(--color-tombstone-light);
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
