@@ -63,10 +63,17 @@ forms accept submissions without persisting until Supabase is connected.
 - Submit an event inquiry, check **event_inquiries**.
 - Validate structured data at https://search.google.com/test/rich-results.
 
+## Photo credits
+
+- `public/images/tombstone-1881-fly.jpg` — Allen Street, Tombstone, Arizona, 1881.
+  Photograph by C. S. Fly. Public domain (published before 1928 / photographer
+  deceased over 100 years). Source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tombstone_(probably_in_1881).jpg).
+  Used in the homepage hero.
+
 ## Before public launch (known gaps)
 
-- **Images are placeholders** — styled gradient tiles. A few businesses have
-  `image_url` values that hotlink discovertombstone.com; those are stored but
+- **Business images are placeholders** — styled desert-scene tiles, not photography.
+  A few businesses have `image_url` values that hotlink discovertombstone.com; those are stored but
   deliberately not rendered (copyright + hotlinking). Replace with owned or
   licensed photography, then render `image_url` in `src/components/BusinessCard.tsx`.
 - **Tiers are pay-to-play** — only Silver Spur Homestead and Team Franko carry

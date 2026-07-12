@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import BusinessCard from "@/components/BusinessCard";
 import JsonLd from "@/components/JsonLd";
@@ -56,7 +57,19 @@ export default function HomePage() {
       <JsonLd data={faqPageSchema()} />
 
       {/* 1. HERO */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-tombstone-dark bg-gradient-to-b from-[#1d150f] via-[#33241a] to-[#4c2f1c]">
+      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-tombstone-dark">
+        {/* 1881 Allen Street, Tombstone — C.S. Fly, public domain (Wikimedia Commons) */}
+        <Image
+          src="/images/tombstone-1881-fly.jpg"
+          alt="Allen Street, Tombstone, Arizona in 1881 — photograph by C.S. Fly"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-[0.55] [filter:grayscale(1)_sepia(0.3)_contrast(1.15)_brightness(0.9)]"
+        />
+        {/* archival tone-map: crush the scan into the site's leather palette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1d150f]/85 via-[#1d150f]/55 to-[#4c2f1c]/95" />
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_70%_60%_at_50%_35%,rgba(43,29,15,0)_0%,rgba(29,21,15,0.5)_100%)]" />
         {/* warm lamplight glow */}
         <div className="absolute inset-0 [background:radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(193,153,63,0.22),transparent_70%)]" />
         {/* desert horizon rising into the next section */}
@@ -113,6 +126,9 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+        <p className="absolute bottom-3 right-4 z-10 text-[10px] tracking-wide text-[#f5eee0]/40 sm:bottom-4 sm:right-6">
+          Allen Street, Tombstone, 1881 — photograph by C. S. Fly, public domain
+        </p>
       </section>
 
       {/* 2. THE TOMBSTONE STORY */}
