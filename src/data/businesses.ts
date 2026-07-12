@@ -169,11 +169,21 @@ const RAW: RawBusiness[] = [
 // Normalization
 // ---------------------------------------------------------------------------
 
-const TIER_MAP: Record<string, Tier> = {
-  premier_story_partner: "premium_featured",
-  featured_story_partner: "featured",
-  story_partner: "free",
-};
+// Tiers are pay-to-play: only businesses with an active paid partnership get a
+// badge. The raw dataset's tier labels are ignored until partnerships are
+// signed — the two founding premier partners below are the only exceptions.
+// When a business signs up, add its id to the matching set.
+const PREMIER_IDS = new Set([
+  "lodging_001", // Silver Spur Homestead
+  "services_007", // Team Franko - Keller Williams Southern Arizona (Trenna Hiney)
+]);
+const FEATURED_IDS = new Set<string>([]);
+
+function toTier(id: string): Tier {
+  if (PREMIER_IDS.has(id)) return "premium_featured";
+  if (FEATURED_IDS.has(id)) return "featured";
+  return "free";
+}
 
 const CATEGORY_MAP: Record<string, Category> = {
   Lodging: "Lodging",
@@ -183,9 +193,8 @@ const CATEGORY_MAP: Record<string, Category> = {
   Services: "Services",
 };
 
-// Homepage featured slots: the two premier partners plus Tombstone Monument
-// Guest Ranch as the third launch feature.
-const HOMEPAGE_FEATURED_IDS = new Set(["lodging_001", "services_007", "lodging_026"]);
+// Homepage featured slots: paying premier partners only.
+const HOMEPAGE_FEATURED_IDS = PREMIER_IDS;
 
 const now = new Date().toISOString();
 
@@ -213,7 +222,7 @@ export const businesses: Business[] = RAW.map((raw) => ({
   email: clean(raw.email),
   website: toWebsite(raw.website),
   image_url: clean(raw.image_url) ?? "",
-  tier: TIER_MAP[raw.tier] ?? "free",
+  tier: toTier(raw.id),
   event_host: raw.event_host,
   event_types: raw.event_types,
   event_capacity: raw.event_capacity > 0 ? `Up to ${raw.event_capacity} guests` : null,
