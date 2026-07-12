@@ -1,4 +1,4 @@
-import BusinessCard from "@/components/BusinessCard";
+import FilteredBusinessGrid from "@/components/FilteredBusinessGrid";
 import JsonLd from "@/components/JsonLd";
 import { getByCategory } from "@/data/businesses";
 import {
@@ -59,19 +59,6 @@ export default function CategoryPage({
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        {subcategories.length > 1 && (
-          <p className="mb-8 flex flex-wrap gap-2 text-xs">
-            {subcategories.map((sub) => (
-              <span
-                key={sub}
-                className="rounded-full bg-tombstone-navy/10 px-3 py-1 font-semibold text-tombstone-navy"
-              >
-                {sub}
-              </span>
-            ))}
-          </p>
-        )}
-
         {items.length === 0 ? (
           <p className="text-tombstone-dark/60">
             Listings coming soon. Are you a {category.toLowerCase()} business in Tombstone?{" "}
@@ -80,11 +67,7 @@ export default function CategoryPage({
             </a>
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((b) => (
-              <BusinessCard key={b.id} business={b} />
-            ))}
-          </div>
+          <FilteredBusinessGrid items={items} subcategories={subcategories} />
         )}
       </section>
     </>
