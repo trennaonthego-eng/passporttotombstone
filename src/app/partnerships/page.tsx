@@ -107,8 +107,9 @@ export default function PartnershipsPage() {
       />
 
       {/* HERO */}
-      <section className="bg-tombstone-navy py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-20 text-white">
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_60%_70%_at_50%_25%,rgba(193,153,63,0.18),transparent_70%)]" />
+        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
             Partner With Us to Tell Tombstone&apos;s Story
           </h1>

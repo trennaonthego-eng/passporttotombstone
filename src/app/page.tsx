@@ -56,19 +56,44 @@ export default function HomePage() {
       <JsonLd data={faqPageSchema()} />
 
       {/* 1. HERO */}
-      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-gradient-to-b from-tombstone-navy via-tombstone-dark to-tombstone-dark">
-        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,var(--color-tombstone-gold)_0,var(--color-tombstone-gold)_1px,transparent_1px,transparent_16px)]" />
-        <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-tombstone-gold">
-            Tombstone, Arizona
+      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-tombstone-dark bg-gradient-to-b from-[#1d150f] via-[#33241a] to-[#4c2f1c]">
+        {/* warm lamplight glow */}
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(193,153,63,0.22),transparent_70%)]" />
+        {/* desert horizon rising into the next section */}
+        <svg
+          viewBox="0 0 1440 140"
+          preserveAspectRatio="none"
+          className="absolute bottom-0 left-0 h-[90px] w-full sm:h-[140px]"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,140 L0,96 Q120,72 260,88 Q400,104 540,80 Q660,60 800,84 Q940,108 1080,86 Q1240,62 1440,92 L1440,140 Z"
+            fill="#6E4226"
+            opacity="0.45"
+          />
+          <path
+            d="M0,140 L0,116 Q180,96 360,110 Q560,126 760,106 Q980,86 1180,108 Q1320,122 1440,112 L1440,140 Z"
+            fill="var(--color-tombstone-light)"
+          />
+        </svg>
+        <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-24 text-center sm:px-6">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.4em] text-tombstone-gold sm:text-sm">
+            Tombstone · Arizona · Est. 1879
           </p>
-          <h1 className="font-display text-5xl font-bold text-white sm:text-7xl">
-            Passport to Tombstone
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] text-[#f5eee0] sm:text-8xl">
+            Passport to
+            <br />
+            Tombstone
           </h1>
-          <p className="mt-4 font-display text-xl text-tombstone-gold sm:text-2xl">
+          <div className="mx-auto mt-7 flex max-w-xs items-center justify-center gap-4 text-tombstone-gold">
+            <span className="h-px flex-1 bg-tombstone-gold/50" />
+            <span className="text-sm">✦</span>
+            <span className="h-px flex-1 bg-tombstone-gold/50" />
+          </div>
+          <p className="mt-6 font-display text-xl italic text-tombstone-gold sm:text-2xl">
             Step into the real Old West. A town too tough to die.
           </p>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/80">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[#f5eee0]/75">
             Tombstone isn&apos;t a museum. It&apos;s alive. 1,400 people live here. Every
             business has a story. Every street remembers history. Come experience the
             authentic Old West—or bring your entire team for an unforgettable retreat.
@@ -76,13 +101,13 @@ export default function HomePage() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
               href="#newsletter"
-              className="w-full rounded-md bg-tombstone-red px-8 py-3 font-semibold text-white transition hover:bg-tombstone-red/90 sm:w-auto"
+              className="w-full rounded-full bg-tombstone-red px-9 py-3.5 text-sm font-semibold uppercase tracking-widest text-white shadow-lg shadow-black/30 transition hover:bg-[#b8532e] sm:w-auto"
             >
               Begin Your Journey
             </a>
             <Link
               href="/events"
-              className="w-full rounded-md border-2 border-tombstone-gold px-8 py-3 font-semibold text-tombstone-gold transition hover:bg-tombstone-gold hover:text-tombstone-dark sm:w-auto"
+              className="w-full rounded-full border border-tombstone-gold/70 px-9 py-3.5 text-sm font-semibold uppercase tracking-widest text-tombstone-gold transition hover:bg-tombstone-gold hover:text-tombstone-dark sm:w-auto"
             >
               Bring Your Event Here
             </Link>
@@ -226,8 +251,9 @@ export default function HomePage() {
       </section>
 
       {/* 7. BRING YOUR EVENT (EVENT HUB) */}
-      <section className="bg-tombstone-navy py-20 text-white">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-20 text-white">
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_70%_80%_at_50%_15%,rgba(193,153,63,0.15),transparent_70%)]" />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-sm font-semibold uppercase tracking-widest text-tombstone-gold">
             Bring Your Event to Tombstone
           </p>

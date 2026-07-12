@@ -57,8 +57,9 @@ export default function CalendarPage() {
       <JsonLd data={eventListSchema()} />
 
       {/* HERO */}
-      <section className="bg-tombstone-navy py-16 text-white">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-16 text-white">
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_70%_80%_at_30%_20%,rgba(193,153,63,0.16),transparent_70%)]" />
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6">
           <p className="text-sm font-semibold uppercase tracking-widest text-tombstone-gold">
             Events Calendar
           </p>

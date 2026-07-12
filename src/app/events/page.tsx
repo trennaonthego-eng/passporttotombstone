@@ -39,8 +39,8 @@ export default function EventsPage() {
       />
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-tombstone-navy to-tombstone-dark py-24 text-white">
-        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,var(--color-tombstone-gold)_0,var(--color-tombstone-gold)_1px,transparent_1px,transparent_16px)]" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-24 text-white">
+        <div className="absolute inset-0 [background:radial-gradient(ellipse_60%_55%_at_50%_30%,rgba(193,153,63,0.2),transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
           <h1 className="font-display text-4xl font-bold sm:text-6xl">
             Bring Your Event to Tombstone
@@ -76,7 +76,7 @@ export default function EventsPage() {
               key={venue.id}
               className="flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm transition hover:shadow-lg"
             >
-              <PlaceholderPhoto seed={venue.id} label={venue.name} className="h-44 w-full" />
+              <PlaceholderPhoto seed={venue.id} className="h-44 w-full" />
               <div className="flex flex-1 flex-col gap-2 p-5">
                 <h3 className="font-display text-lg font-bold text-tombstone-dark">
                   {venue.name}
@@ -104,11 +104,7 @@ export default function EventsPage() {
 
           {/* Historic buildings placeholder venue */}
           <article className="flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm transition hover:shadow-lg">
-            <PlaceholderPhoto
-              seed="historic-buildings"
-              label="Historic Buildings of Allen Street"
-              className="h-44 w-full"
-            />
+            <PlaceholderPhoto seed="historic-buildings" className="h-44 w-full" />
             <div className="flex flex-1 flex-col gap-2 p-5">
               <h3 className="font-display text-lg font-bold text-tombstone-dark">
                 Historic Buildings &amp; Town Venues

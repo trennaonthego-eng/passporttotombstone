@@ -12,11 +12,11 @@ export default function BusinessCard({ business }: { business: Business }) {
   const badge = TIER_BADGE[business.tier];
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm transition hover:shadow-lg">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-tombstone-dark/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative h-44 w-full">
-        <PlaceholderPhoto seed={business.id} label={business.name} className="h-full w-full" />
+        <PlaceholderPhoto seed={business.id} className="h-full w-full" />
         {badge && (
-          <span className="absolute left-3 top-3 rounded-full bg-tombstone-gold px-3 py-1 text-xs font-bold uppercase tracking-wide text-tombstone-dark shadow">
+          <span className="absolute left-3 top-3 rounded-full bg-tombstone-gold px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white shadow-md">
             {badge}
           </span>
         )}

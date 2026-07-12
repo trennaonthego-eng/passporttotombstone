@@ -28,7 +28,7 @@
   --color-tombstone-dark: var(--color-tombstone-dark);
   --color-tombstone-light: var(--color-tombstone-light);
   --font-sans: var(--font-geist-sans);
-  --font-display: var(--font-geist-sans);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -38,8 +38,22 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Editorial display serif for headlines, wordmarks, and business names. */
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
-  letter-spacing: -0.01em;
+  font-family: var(--font-fraunces), Georgia, serif;
+  letter-spacing: -0.015em;
+  font-optical-sizing: auto;
+}
+
+/* Subtle paper grain over everything — keeps the parchment from feeling flat. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
