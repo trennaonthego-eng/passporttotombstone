@@ -21,6 +21,20 @@ Destination marketing platform and event hosting hub for Tombstone, Arizona.
 - **AI concierge** — floating chat widget that answers questions and suggests real businesses/events from the site's own data; works today via a local keyword matcher, upgrades to real Claude replies the moment `ANTHROPIC_API_KEY` is set
 - **Accounts** — email magic-link sign-in (Supabase Auth) at `/account` to save trips across devices; itinerary saving works anonymously too
 
+## Admin panel (VA-friendly)
+
+`/admin` is a password-gated, three-button dashboard — no coding knowledge needed:
+
+1. **📋 Event Inquiries** — every inquiry from the events form, with a status
+   dropdown (New → Contacted → Booked/Closed).
+2. **💌 Newsletter List** — all subscribers with one-click CSV download.
+3. **📅 Calendar Events** — add events that appear on the public /calendar
+   within 5 minutes; remove them just as easily.
+
+Setup: set `ADMIN_PASSWORD` (the login you give your VA) and
+`SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API → service_role)
+in Vercel's environment variables. `/admin` is blocked in robots.txt.
+
 ## Run locally
 
 ```bash

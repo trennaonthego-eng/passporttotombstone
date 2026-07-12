@@ -91,6 +91,21 @@ create table if not exists itineraries (
 );
 
 -- ---------------------------------------------------------------------------
+-- town_events
+-- Calendar events added from the /admin dashboard (the built-in 2026 schedule
+-- lives in the codebase; these are additions a VA can make without code).
+-- ---------------------------------------------------------------------------
+create table if not exists town_events (
+  id uuid primary key default uuid_generate_v4(),
+  name text not null,
+  event_date date not null,
+  time_label text not null,     -- "10:00 AM - 4:00 PM"
+  venue text not null,
+  address text default 'Tombstone, AZ 85638',
+  created_at timestamptz default now()
+);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- The site uses the anon key from the browser/server, so:
 --   * anyone may read businesses
@@ -102,6 +117,12 @@ alter table newsletter_signups enable row level security;
 alter table partnerships enable row level security;
 alter table event_inquiries enable row level security;
 alter table itineraries enable row level security;
+alter table town_events enable row level security;
+
+-- Anyone can read town events (they render on the public /calendar page).
+-- Writes happen only through the admin API using the service-role key.
+create policy "public read town events"
+  on town_events for select using (true);
 
 create policy "public read businesses"
   on businesses for select using (true);

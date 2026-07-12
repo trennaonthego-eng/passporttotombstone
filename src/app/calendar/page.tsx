@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
-import { calendarEvents, calendarMonths } from "@/data/calendar-events";
+import { calendarEvents, type CalendarEvent } from "@/data/calendar-events";
+import { getSupabase } from "@/lib/supabase";
 import { breadcrumbSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
@@ -10,16 +11,60 @@ export const metadata: Metadata = {
     "Coming events in Tombstone, Arizona: Vigilante Sundays, Helldorado Days, bull riding at the Shoot-Out Arena, the monthly market, and more. Dates, times, and locations for the town too tough to die.",
 };
 
+// Re-render every 5 minutes so events added from /admin show up without a deploy.
+export const revalidate = 300;
+
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+interface TownEventRow {
+  name: string;
+  event_date: string; // YYYY-MM-DD
+  time_label: string;
+  venue: string;
+  address: string | null;
+}
+
+function rowToCalendarEvent(row: TownEventRow): CalendarEvent {
+  const [y, m, d] = row.event_date.split("-").map(Number);
+  return {
+    name: row.name,
+    month: `${MONTHS[m - 1]} ${y}`,
+    dateLabel: `${MONTHS[m - 1]} ${d}`,
+    timeLabel: row.time_label,
+    venue: row.venue,
+    address: row.address || "Tombstone, AZ 85638",
+    startIso: `${row.event_date}T00:00:00-07:00`,
+    endIso: `${row.event_date}T23:59:00-07:00`,
+  };
+}
+
+async function getMergedEvents(): Promise<CalendarEvent[]> {
+  const merged = [...calendarEvents];
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("town_events")
+      .select("name, event_date, time_label, venue, address");
+    if (!error && data) {
+      merged.push(...(data as TownEventRow[]).map(rowToCalendarEvent));
+    }
+  }
+  return merged.sort((a, b) => a.startIso.localeCompare(b.startIso));
+}
+
 function mapsUrl(address: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
 
-function eventListSchema() {
+function eventListSchema(events: CalendarEvent[]) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Historic Tombstone Events",
-    itemListElement: calendarEvents.map((ev, i) => ({
+    itemListElement: events.map((ev, i) => ({
       "@type": "ListItem",
       position: i + 1,
       item: {
@@ -45,7 +90,10 @@ function eventListSchema() {
   };
 }
 
-export default function CalendarPage() {
+export default async function CalendarPage() {
+  const events = await getMergedEvents();
+  const months = Array.from(new Set(events.map((e) => e.month)));
+
   return (
     <>
       <JsonLd
@@ -54,7 +102,7 @@ export default function CalendarPage() {
           { name: "Events Calendar", path: "/calendar" },
         ])}
       />
-      <JsonLd data={eventListSchema()} />
+      <JsonLd data={eventListSchema(events)} />
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-16 text-white">
@@ -85,13 +133,13 @@ export default function CalendarPage() {
 
       {/* EVENTS BY MONTH */}
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-        {calendarMonths.map((month) => (
+        {months.map((month) => (
           <div key={month} className="mb-12">
             <h2 className="border-b-2 border-tombstone-red pb-2 font-display text-2xl font-bold text-tombstone-navy">
               {month}
             </h2>
             <div className="mt-4 space-y-4">
-              {calendarEvents
+              {events
                 .filter((ev) => ev.month === month)
                 .map((ev, i) => (
                   <article

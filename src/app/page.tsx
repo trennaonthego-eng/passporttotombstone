@@ -159,6 +159,12 @@ export default function HomePage() {
             it&apos;s open to you.
           </p>
         </div>
+        <Link
+          href="/story"
+          className="mt-8 inline-block rounded-md border-2 border-tombstone-navy px-6 py-2.5 font-semibold text-tombstone-navy transition hover:bg-tombstone-navy hover:text-white"
+        >
+          Read the Full Story — Myth vs. the Record
+        </Link>
       </section>
 
       {/* 3. FEATURED STORY PARTNERS */}
