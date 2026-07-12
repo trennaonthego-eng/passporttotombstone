@@ -69,10 +69,10 @@ forms accept submissions without persisting until Supabase is connected.
   `image_url` values that hotlink discovertombstone.com; those are stored but
   deliberately not rendered (copyright + hotlinking). Replace with owned or
   licensed photography, then render `image_url` in `src/components/BusinessCard.tsx`.
-- **Tier review** — nearly every business in the imported dataset is marked
-  `featured` (the $49/mo tier), so most cards carry a Featured badge. Review
-  which businesses are actually paying partners and downgrade the rest to
-  `story_partner` in `src/data/businesses.ts`.
+- **Tiers are pay-to-play** — only Silver Spur Homestead and Team Franko carry
+  Premier badges; every other listing is a free Story Partner. When a business
+  signs a paid partnership, add its id to `PREMIER_IDS` or `FEATURED_IDS` in
+  `src/data/businesses.ts` and regenerate the SQL seed.
 - **Newsletter sending** (Resend/Mailchimp) is not wired up — signups are captured
   in Supabase; sending is a separate step.
 - **Social links** in the footer point to `#`.
