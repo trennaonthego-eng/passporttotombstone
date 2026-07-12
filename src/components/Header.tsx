@@ -9,7 +9,8 @@ const NAV_LINKS = [
   { href: "/attractions", label: "Attractions" },
   { href: "/shopping", label: "Shopping" },
   { href: "/services", label: "Services" },
-  { href: "/events", label: "Events" },
+  { href: "/calendar", label: "Calendar" },
+  { href: "/events", label: "Host an Event" },
   { href: "/partnerships", label: "Partner With Us" },
 ];
 

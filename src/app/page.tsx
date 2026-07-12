@@ -318,9 +318,17 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-sm text-tombstone-dark/70">
-            Join the newsletter below and we&apos;ll bring the calendar to you every week.
-          </p>
+          <div className="mt-8 text-center">
+            <Link
+              href="/calendar"
+              className="inline-block rounded-md border-2 border-tombstone-navy px-6 py-2.5 font-semibold text-tombstone-navy transition hover:bg-tombstone-navy hover:text-white"
+            >
+              See the Full Calendar
+            </Link>
+            <p className="mt-4 text-sm text-tombstone-dark/70">
+              Join the newsletter below and we&apos;ll bring the calendar to you every week.
+            </p>
+          </div>
         </div>
       </section>
 
