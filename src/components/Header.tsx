@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/shopping", label: "Shopping" },
   { href: "/services", label: "Services" },
   { href: "/calendar", label: "Calendar" },
-  { href: "/events", label: "Host an Event" },
+  { href: "/events", label: "Bring Your Event Here" },
   { href: "/partnerships", label: "Partner With Us" },
 ];
 

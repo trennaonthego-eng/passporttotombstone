@@ -57,7 +57,7 @@ export default function HomePage() {
 
       {/* 1. HERO */}
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-gradient-to-b from-tombstone-navy via-tombstone-dark to-tombstone-dark">
-        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,#d4af37_0,#d4af37_1px,transparent_1px,transparent_16px)]" />
+        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,var(--color-tombstone-gold)_0,var(--color-tombstone-gold)_1px,transparent_1px,transparent_16px)]" />
         <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-tombstone-gold">
             Tombstone, Arizona
@@ -84,7 +84,7 @@ export default function HomePage() {
               href="/events"
               className="w-full rounded-md border-2 border-tombstone-gold px-8 py-3 font-semibold text-tombstone-gold transition hover:bg-tombstone-gold hover:text-tombstone-dark sm:w-auto"
             >
-              Host Your Event
+              Bring Your Event Here
             </Link>
           </div>
         </div>

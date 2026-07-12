@@ -40,7 +40,7 @@ export default function EventsPage() {
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-b from-tombstone-navy to-tombstone-dark py-24 text-white">
-        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,#d4af37_0,#d4af37_1px,transparent_1px,transparent_16px)]" />
+        <div className="absolute inset-0 opacity-10 [background-image:repeating-linear-gradient(45deg,var(--color-tombstone-gold)_0,var(--color-tombstone-gold)_1px,transparent_1px,transparent_16px)]" />
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
           <h1 className="font-display text-4xl font-bold sm:text-6xl">
             Bring Your Event to Tombstone

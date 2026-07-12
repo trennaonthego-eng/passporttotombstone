@@ -149,7 +149,7 @@ export default function CalendarPage() {
               href="/events"
               className="rounded-md border-2 border-tombstone-navy px-6 py-2.5 text-sm font-semibold text-tombstone-navy transition hover:bg-tombstone-navy hover:text-white"
             >
-              Host Your Own Event Here
+              Bring Your Event Here
             </Link>
           </div>
         </div>

@@ -28,7 +28,7 @@ export default function Footer() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-white/50">Business</p>
           <ul className="mt-3 space-y-2 text-sm">
-            <li><Link href="/events" className="hover:text-white">Host Your Event</Link></li>
+            <li><Link href="/events" className="hover:text-white">Bring Your Event Here</Link></li>
             <li><Link href="/partnerships" className="hover:text-white">Partnerships & Pricing</Link></li>
           </ul>
           <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/50">Follow</p>

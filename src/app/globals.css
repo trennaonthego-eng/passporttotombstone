@@ -1,13 +1,22 @@
 @import "tailwindcss";
 
+/*
+ * Warm Old West palette — leather, dust, and lamplight. Muted and cinematic,
+ * not costume-shop. Variable names are legacy (navy/red) but map to:
+ *   red   → rust / burnt sienna (primary accent, CTAs)
+ *   navy  → deep espresso leather (headings, dark sections)
+ *   gold  → antique brass
+ *   dark  → coffee-black (body text, footer)
+ *   light → warm parchment (page background)
+ */
 :root {
-  --background: #f9fafb;
-  --foreground: #1f2937;
-  --color-tombstone-red: #dc143c;
-  --color-tombstone-navy: #003366;
-  --color-tombstone-gold: #d4af37;
-  --color-tombstone-dark: #1f2937;
-  --color-tombstone-light: #f9fafb;
+  --background: #f5eee0;
+  --foreground: #2b211a;
+  --color-tombstone-red: #a04424;
+  --color-tombstone-navy: #3f2e20;
+  --color-tombstone-gold: #c1993f;
+  --color-tombstone-dark: #2b211a;
+  --color-tombstone-light: #f5eee0;
 }
 
 @theme inline {
