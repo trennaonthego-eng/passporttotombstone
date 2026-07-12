@@ -3,6 +3,7 @@ import JsonLd from "@/components/JsonLd";
 import { getByCategory } from "@/data/businesses";
 import {
   breadcrumbSchema,
+  categoryItemListSchema,
   localBusinessSchema,
 } from "@/lib/structured-data";
 import type { Category } from "@/lib/types";
@@ -41,6 +42,7 @@ export default function CategoryPage({
           { name: category, path },
         ])}
       />
+      <JsonLd data={categoryItemListSchema(category, path, items)} />
       {items.map((b) => (
         <JsonLd key={b.id} data={localBusinessSchema(b)} />
       ))}

@@ -26,7 +26,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://passporttotombstone.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    // Relative canonical resolves per-route against metadataBase, so every
+    // page declares its own canonical URL without per-page boilerplate.
+    canonical: "./",
+  },
   title: {
     default: "Passport to Tombstone — Step Into the Real Old West",
     template: "%s | Passport to Tombstone",

@@ -10,6 +10,8 @@ import {
   HOMEPAGE_FAQ,
   faqPageSchema,
   organizationSchema,
+  touristDestinationSchema,
+  webSiteSchema,
 } from "@/lib/structured-data";
 
 const EXPERIENCES = [
@@ -54,6 +56,8 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={organizationSchema()} />
+      <JsonLd data={webSiteSchema()} />
+      <JsonLd data={touristDestinationSchema()} />
       <JsonLd data={faqPageSchema()} />
 
       {/* 1. HERO */}

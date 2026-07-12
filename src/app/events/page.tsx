@@ -3,7 +3,11 @@ import EventInquiryForm from "@/components/EventInquiryForm";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { getEventVenues } from "@/data/businesses";
-import { breadcrumbSchema } from "@/lib/structured-data";
+import {
+  EVENTS_PAGE_FAQ,
+  breadcrumbSchema,
+  eventsFaqSchema,
+} from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "Host Your Event in Tombstone, AZ",
@@ -37,6 +41,7 @@ export default function EventsPage() {
           { name: "Events", path: "/events" },
         ])}
       />
+      <JsonLd data={eventsFaqSchema()} />
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-24 text-white">
@@ -150,6 +155,23 @@ export default function EventsPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* FAQ — answer-first, matches FAQPage schema */}
+      <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+        <h2 className="font-display text-3xl font-bold text-tombstone-navy">
+          Event Planning Questions
+        </h2>
+        <div className="mt-8 space-y-4">
+          {EVENTS_PAGE_FAQ.map((faq) => (
+            <details key={faq.question} className="rounded-lg border border-black/10 bg-white p-5">
+              <summary className="cursor-pointer font-display font-semibold text-tombstone-dark marker:text-tombstone-red">
+                {faq.question}
+              </summary>
+              <p className="mt-3 text-sm leading-relaxed text-tombstone-dark/80">{faq.answer}</p>
+            </details>
+          ))}
         </div>
       </section>
 
