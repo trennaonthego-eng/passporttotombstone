@@ -11,8 +11,15 @@ Destination marketing platform and event hosting hub for Tombstone, Arizona.
 - **Events page** (`/events`) — 5 event-host venues with capacities (Silver Spur Homestead, Tombstone Monument Guest Ranch, O.K. Corral, The Saloon Theatre, The Shootout Arena) plus historic town venues, event types, and a working inquiry form
 - **Partnerships page** (`/partnerships`) — all 5 tiers (Free / $49 / $199 / $499 / $199 sponsor) plus FAQ
 - **API routes** — `/api/newsletter` and `/api/event-inquiry` write to Supabase; both degrade gracefully (accept + log) until Supabase env vars are set
-- **AI SEO** — Organization/FAQPage/LocalBusiness/BreadcrumbList JSON-LD and `/llms.txt`
-- **Seed data** — 126 businesses in `src/data/businesses.ts` (the single source of truth, raw dataset + normalizer); town events in `src/data/events.ts`; `supabase/seed.sql` is generated from the business data
+- **AI SEO** — Organization/FAQPage/LocalBusiness/BreadcrumbList/Event JSON-LD and `/llms.txt`
+- **Seed data** — 126 businesses in `src/data/businesses.ts` (the single source of truth, raw dataset + normalizer); town events in `src/data/events.ts` and `src/data/calendar-events.ts`; `supabase/seed.sql` is generated from the business data
+- **Page-curl navigation** — routes transition with a book-page-turn effect (Next.js View Transitions API); respects `prefers-reduced-motion`
+- **1880s photography** — real, public-domain 1881 photo of Allen Street (C.S. Fly) in the homepage hero
+- **Calendar page** (`/calendar`) — 23 dated 2026 town events grouped by month, with Google Maps links and Event schema
+- **Business detail pages + QR codes** (`/business/[id]`) — one page per business split into "The Building" (honest historic context) and "Today" (current business info), each with a downloadable QR code linking back to that page for physical placement
+- **Trip planner** — "Add to Trip" on every business card, a floating trip tray (persists via localStorage, no account needed), and a "Save & Get Share Link" flow that publishes to `/trip/[slug]` once Supabase is connected
+- **AI concierge** — floating chat widget that answers questions and suggests real businesses/events from the site's own data; works today via a local keyword matcher, upgrades to real Claude replies the moment `ANTHROPIC_API_KEY` is set
+- **Accounts** — email magic-link sign-in (Supabase Auth) at `/account` to save trips across devices; itinerary saving works anonymously too
 
 ## Run locally
 
@@ -45,6 +52,9 @@ forms accept submissions without persisting until Supabase is connected.
 4. Go to **Project Settings → API** and copy:
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon` `public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+5. (For accounts) In **Authentication → Providers**, email/magic-link sign-in is
+   on by default — no extra setup needed. In **Authentication → URL Configuration**,
+   add your production URL to the redirect allow-list once deployed.
 
 ### 3. Deploy to Vercel
 
@@ -54,6 +64,8 @@ forms accept submissions without persisting until Supabase is connected.
    - `NEXT_PUBLIC_SUPABASE_URL` = (from step 2)
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = (from step 2)
    - `NEXT_PUBLIC_SITE_URL` = your production URL (e.g. `https://passporttotombstone.com`)
+   - `ANTHROPIC_API_KEY` = optional — adds real Claude replies to the concierge.
+     Without it, the concierge still works using the local keyword matcher.
 3. Click **Deploy**. Every future `git push` to `main` redeploys automatically.
 
 ### 4. Verify
@@ -61,6 +73,9 @@ forms accept submissions without persisting until Supabase is connected.
 - Homepage loads with featured partners.
 - Submit the newsletter form, then check Supabase **Table Editor → newsletter_signups**.
 - Submit an event inquiry, check **event_inquiries**.
+- Add something to the trip tray, hit **Save & Get Share Link**, check
+  **Table Editor → itineraries**, and confirm the `/trip/[slug]` link loads.
+- Sign in at `/account` with your email and confirm the magic-link email arrives.
 - Validate structured data at https://search.google.com/test/rich-results.
 
 ## Photo credits

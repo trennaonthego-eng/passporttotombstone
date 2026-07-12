@@ -75,6 +75,22 @@ create table if not exists event_inquiries (
 );
 
 -- ---------------------------------------------------------------------------
+-- itineraries
+-- Trip-planner output from the AI concierge / "Add to Trip" tray. Anonymous
+-- visitors get a random share_slug; signed-in visitors also get user_id so
+-- the trip shows up under their account.
+-- ---------------------------------------------------------------------------
+create table if not exists itineraries (
+  id uuid primary key default uuid_generate_v4(),
+  share_slug text unique not null,
+  user_id uuid references auth.users(id) on delete set null,
+  title text default 'My Tombstone Trip',
+  items jsonb not null default '[]', -- ItineraryItem[]: {id, kind, name, category, note}
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- The site uses the anon key from the browser/server, so:
 --   * anyone may read businesses
@@ -85,6 +101,7 @@ alter table businesses enable row level security;
 alter table newsletter_signups enable row level security;
 alter table partnerships enable row level security;
 alter table event_inquiries enable row level security;
+alter table itineraries enable row level security;
 
 create policy "public read businesses"
   on businesses for select using (true);
@@ -94,3 +111,18 @@ create policy "public insert newsletter signups"
 
 create policy "public insert event inquiries"
   on event_inquiries for insert with check (true);
+
+-- Itineraries: anyone can create one (anonymous trip planning) and read one
+-- by its (unguessable) share_slug — same trust model as any share-link
+-- product. Only the owning user can update/delete their own saved trips.
+create policy "public insert itineraries"
+  on itineraries for insert with check (true);
+
+create policy "public read itineraries by slug"
+  on itineraries for select using (true);
+
+create policy "owner update own itineraries"
+  on itineraries for update using (auth.uid() = user_id);
+
+create policy "owner delete own itineraries"
+  on itineraries for delete using (auth.uid() = user_id);

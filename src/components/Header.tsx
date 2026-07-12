@@ -24,7 +24,7 @@ export default function Header() {
           Passport to <span className="text-tombstone-red">Tombstone</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-5 lg:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -34,6 +34,12 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/account"
+            className="rounded-full border border-tombstone-navy/30 px-3 py-1 text-sm font-medium text-tombstone-navy transition hover:bg-tombstone-navy hover:text-white"
+          >
+            Account
+          </Link>
         </nav>
 
         <button
@@ -61,6 +67,13 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/account"
+            onClick={() => setOpen(false)}
+            className="rounded px-2 py-2 text-sm font-medium text-tombstone-dark hover:bg-black/5"
+          >
+            Account
+          </Link>
         </nav>
       )}
     </header>

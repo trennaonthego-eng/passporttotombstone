@@ -58,6 +58,24 @@ export interface EventInquiry {
   created_at?: string;
 }
 
+export interface ItineraryItem {
+  id: string; // business id, or `event:<calendar event index>`, or `townevent:<id>`
+  kind: "business" | "calendar-event" | "town-event";
+  name: string;
+  category?: string;
+  note?: string; // e.g. date/time label for events
+}
+
+export interface Itinerary {
+  id?: string;
+  share_slug: string;
+  user_id?: string | null;
+  title: string;
+  items: ItineraryItem[];
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Partnership {
   id?: string;
   business_id: string;

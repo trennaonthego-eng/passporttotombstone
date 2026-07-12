@@ -1,0 +1,163 @@
+import { businesses } from "@/data/businesses";
+import { calendarEvents } from "@/data/calendar-events";
+import type { ItineraryItem } from "@/lib/types";
+
+const STOPWORDS = new Set([
+  "the", "a", "an", "and", "or", "to", "in", "of", "for", "with", "on", "is", "are",
+  "i", "im", "we", "us", "my", "want", "would", "like", "please", "can", "you", "me",
+  "what", "where", "when", "how", "do", "does", "some", "any", "good", "best",
+]);
+
+function tokenize(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w));
+}
+
+export interface ConciergeMatch {
+  item: ItineraryItem;
+  score: number;
+  blurb: string;
+}
+
+/** Keyword-overlap matcher over local data — the concierge's fallback brain
+ * when no LLM key is configured, and the retrieval step that keeps the LLM
+ * prompt small when one is. */
+export function findMatches(message: string, limit = 5): ConciergeMatch[] {
+  const queryTokens = new Set(tokenize(message));
+  if (queryTokens.size === 0) return [];
+
+  const scored: ConciergeMatch[] = [];
+
+  for (const b of businesses) {
+    const haystack = tokenize(
+      [b.name, b.category, b.subcategory, b.description, b.story].filter(Boolean).join(" ")
+    );
+    const overlap = haystack.filter((w) => queryTokens.has(w)).length;
+    if (overlap > 0) {
+      scored.push({
+        item: { id: b.id, kind: "business", name: b.name, category: b.category },
+        score: overlap,
+        blurb: b.story,
+      });
+    }
+  }
+
+  calendarEvents.forEach((ev, i) => {
+    const haystack = tokenize([ev.name, ev.venue].join(" "));
+    const overlap = haystack.filter((w) => queryTokens.has(w)).length;
+    if (overlap > 0) {
+      scored.push({
+        item: {
+          id: `calendar:${i}`,
+          kind: "calendar-event",
+          name: ev.name,
+          category: "Event",
+          note: `${ev.dateLabel} · ${ev.timeLabel}`,
+        },
+        score: overlap,
+        blurb: `${ev.venue}, ${ev.dateLabel}`,
+      });
+    }
+  });
+
+  return scored.sort((a, b) => b.score - a.score).slice(0, limit);
+}
+
+const CATEGORY_HINTS: Record<string, string> = {
+  stay: "Lodging",
+  sleep: "Lodging",
+  hotel: "Lodging",
+  eat: "Dining",
+  food: "Dining",
+  drink: "Dining",
+  saloon: "Dining",
+  see: "Attractions",
+  do: "Attractions",
+  gunfight: "Attractions",
+  shop: "Shopping",
+  wedding: "Services",
+  event: "Services",
+  retreat: "Services",
+};
+
+export function ruleBasedReply(message: string): { reply: string; matches: ConciergeMatch[] } {
+  const matches = findMatches(message, 5);
+  const lower = message.toLowerCase();
+  const hintedCategory = Object.entries(CATEGORY_HINTS).find(([k]) => lower.includes(k))?.[1];
+
+  if (matches.length === 0) {
+    return {
+      reply:
+        "I couldn't find a strong match for that in the Passport yet — try asking about lodging, saloons, gunfights, mine tours, shopping, or hosting an event, and I'll pull real Tombstone spots for you.",
+      matches: [],
+    };
+  }
+
+  const names = matches.slice(0, 3).map((m) => m.item.name);
+  const lead = hintedCategory
+    ? `Here's what's real in Tombstone for ${hintedCategory.toLowerCase()}:`
+    : "Here's what I found in the Passport for that:";
+
+  return {
+    reply: `${lead} ${names.join(", ")}${matches.length > 3 ? ", and a couple more" : ""}. Want me to add any of these to your trip?`,
+    matches,
+  };
+}
+
+interface AnthropicReplyResult {
+  reply: string;
+  matches: ConciergeMatch[];
+}
+
+export async function anthropicReply(
+  message: string,
+  history: { role: "user" | "assistant"; content: string }[]
+): Promise<AnthropicReplyResult> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const matches = findMatches(message, 8);
+
+  if (!apiKey) {
+    const fallback = ruleBasedReply(message);
+    return { reply: fallback.reply, matches: fallback.matches };
+  }
+
+  const catalog = matches
+    .map((m) => `- [${m.item.kind}:${m.item.id}] ${m.item.name} (${m.item.category ?? ""}) — ${m.blurb}`)
+    .join("\n");
+
+  const systemPrompt = `You are the Passport to Tombstone concierge — a warm, knowledgeable guide to Tombstone, Arizona (the real town, 1,400 residents, "too tough to die"). Help visitors plan an itinerary using ONLY the businesses/events listed below; do not invent businesses, addresses, or historical claims. Keep replies to 2-3 sentences, conversational, no corny Old West clichés. If nothing below fits, say so honestly and suggest browsing the site's categories instead.
+
+Available matches for this query:
+${catalog || "(none matched — tell the visitor to browse Lodging, Dining, Attractions, Shopping, Services, or the Events Calendar)"}`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-5",
+        max_tokens: 300,
+        system: systemPrompt,
+        messages: [...history, { role: "user", content: message }],
+      }),
+    });
+
+    if (!res.ok) throw new Error(`Anthropic API returned ${res.status}`);
+    const data = await res.json();
+    const reply = data.content?.[0]?.text?.trim();
+    if (!reply) throw new Error("Empty response from Anthropic API");
+
+    return { reply, matches };
+  } catch (err) {
+    console.error("[concierge] Anthropic call failed, falling back to keyword matcher:", err);
+    const fallback = ruleBasedReply(message);
+    return { reply: fallback.reply, matches: fallback.matches };
+  }
+}

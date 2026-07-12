@@ -4,6 +4,10 @@ import { ViewTransition } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ItineraryTray from "@/components/ItineraryTray";
+import ConciergeWidget from "@/components/ConciergeWidget";
+import { ItineraryProvider } from "@/lib/itinerary-context";
+import { AuthProvider } from "@/lib/auth-context";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -56,15 +60,21 @@ export default function RootLayout({
       className={`${fraunces.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <div style={{ viewTransitionName: "site-chrome" }}>
-          <Header />
-        </div>
-        <main className="flex-1">
-          <ViewTransition enter="page-curl-in" exit="page-curl-out" default="none">
-            {children}
-          </ViewTransition>
-        </main>
-        <Footer />
+        <AuthProvider>
+          <ItineraryProvider>
+            <div style={{ viewTransitionName: "site-chrome" }}>
+              <Header />
+            </div>
+            <main className="flex-1">
+              <ViewTransition enter="page-curl-in" exit="page-curl-out" default="none">
+                {children}
+              </ViewTransition>
+            </main>
+            <Footer />
+            <ItineraryTray />
+            <ConciergeWidget />
+          </ItineraryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
