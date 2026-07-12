@@ -45,6 +45,64 @@ body {
   font-optical-sizing: auto;
 }
 
+/* Page-curl navigation: the outgoing page lifts and curls away at its right
+   edge like a book page turning; the incoming page settles in from the left.
+   Powered by the browser View Transitions API via React's <ViewTransition>. */
+::view-transition-group(root) {
+  perspective: 2400px;
+}
+
+::view-transition-group(site-chrome) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-chrome) {
+  display: none;
+}
+::view-transition-new(site-chrome) {
+  animation: none;
+}
+
+::view-transition-old(.page-curl-out) {
+  transform-origin: right center;
+  box-shadow: -40px 0 60px -20px rgba(20, 14, 8, 0.4);
+  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both curl-out;
+}
+::view-transition-new(.page-curl-in) {
+  transform-origin: left center;
+  animation: 460ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both curl-in;
+}
+
+@keyframes curl-out {
+  0% {
+    transform: rotateY(0deg) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-24deg) translateZ(-80px);
+    opacity: 0;
+  }
+}
+@keyframes curl-in {
+  0% {
+    transform: rotateY(18deg) translateZ(-60px);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg) translateZ(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
 /* Subtle paper grain over everything — keeps the parchment from feeling flat. */
 body::after {
   content: "";

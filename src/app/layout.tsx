@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { ViewTransition } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -55,8 +56,14 @@ export default function RootLayout({
       className={`${fraunces.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
+        <div style={{ viewTransitionName: "site-chrome" }}>
+          <Header />
+        </div>
+        <main className="flex-1">
+          <ViewTransition enter="page-curl-in" exit="page-curl-out" default="none">
+            {children}
+          </ViewTransition>
+        </main>
         <Footer />
       </body>
     </html>
