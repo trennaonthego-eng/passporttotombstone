@@ -4,6 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import NewsletterForm from "@/components/NewsletterForm";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { featuredHomepageBusinesses, getByCategory } from "@/data/businesses";
+import { townEvents } from "@/data/events";
 import {
   HOMEPAGE_FAQ,
   faqPageSchema,
@@ -288,22 +289,38 @@ export default function HomePage() {
 
       {/* 9. EVENTS CALENDAR */}
       <section className="bg-white py-20">
-        <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-          <p className="text-sm font-semibold uppercase tracking-widest text-tombstone-red">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-center text-sm font-semibold uppercase tracking-widest text-tombstone-red">
             Events Calendar
           </p>
-          <h2 className="mt-2 font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
+          <h2 className="mt-2 text-center font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
             What&apos;s Happening
           </h2>
-          <div className="mx-auto mt-10 max-w-xl rounded-xl border border-dashed border-tombstone-navy/30 bg-tombstone-light p-10">
-            <p className="font-display text-lg font-semibold text-tombstone-navy">
-              The calendar is loading up.
-            </p>
-            <p className="mt-2 text-sm text-tombstone-dark/70">
-              Gunfight shows, festivals, and town events will be listed here. Join the
-              newsletter below and we&apos;ll bring the calendar to you every week.
-            </p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {townEvents.map((ev) => (
+              <div
+                key={ev.id}
+                className="flex flex-col rounded-xl border border-black/10 bg-tombstone-light p-5"
+              >
+                <span className="w-fit rounded-full bg-tombstone-red/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-tombstone-red">
+                  {ev.recurring}
+                </span>
+                <h3 className="mt-3 font-display text-lg font-bold text-tombstone-dark">
+                  {ev.name}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-tombstone-dark/75">
+                  {ev.description}
+                </p>
+                <div className="mt-auto pt-3 text-xs text-tombstone-dark/60">
+                  <p>{ev.time}</p>
+                  <p>{ev.location}</p>
+                </div>
+              </div>
+            ))}
           </div>
+          <p className="mt-8 text-center text-sm text-tombstone-dark/70">
+            Join the newsletter below and we&apos;ll bring the calendar to you every week.
+          </p>
         </div>
       </section>
 
