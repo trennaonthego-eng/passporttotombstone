@@ -23,6 +23,7 @@ const rows = businesses
         q(b.description),
         q(b.story),
         q(b.address),
+        q(b.hours),
         q(b.phone),
         q(b.email),
         q(b.website),
@@ -41,7 +42,7 @@ const sql = `-- Passport to Tombstone — business seed data
 -- Run after schema.sql in the Supabase SQL Editor.
 
 insert into businesses
-  (id, name, category, subcategory, description, story, address, phone, email, website,
+  (id, name, category, subcategory, description, story, address, hours, phone, email, website,
    image_url, tier, event_host, event_types, event_capacity, is_featured_on_homepage)
 values
 ${rows}
@@ -52,6 +53,7 @@ on conflict (id) do update set
   description = excluded.description,
   story = excluded.story,
   address = excluded.address,
+  hours = excluded.hours,
   phone = excluded.phone,
   email = excluded.email,
   website = excluded.website,

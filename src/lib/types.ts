@@ -15,6 +15,7 @@ export interface Business {
   description: string;
   story: string;
   address: string | null;
+  hours: string | null;
   phone: string | null;
   email: string | null;
   website: string | null;

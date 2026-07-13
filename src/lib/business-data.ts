@@ -22,6 +22,7 @@ interface BusinessRow {
   description: string | null;
   story: string | null;
   address: string | null;
+  hours: string | null;
   phone: string | null;
   email: string | null;
   website: string | null;
@@ -50,6 +51,7 @@ function rowToBusiness(row: BusinessRow, base?: Business): Business {
     description: row.description?.trim() || base?.description || "",
     story: row.story?.trim() || base?.story || "",
     address: row.address?.trim() || base?.address || null,
+    hours: row.hours?.trim() || base?.hours || null,
     phone: row.phone?.trim() || base?.phone || null,
     email: row.email?.trim() || base?.email || null,
     website,

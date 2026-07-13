@@ -22,6 +22,7 @@ function VenueCard({ id }: { id: string }) {
           </p>
         )}
         <p className="text-sm leading-relaxed text-tombstone-dark/75">{b.description}</p>
+        {b.address && <p className="text-xs text-tombstone-dark/60">📍 {b.address}</p>}
         <div className="mt-auto flex items-center justify-between pt-3 text-sm">
           {b.phone ? (
             <a href={`tel:${b.phone}`} className="text-tombstone-dark/70 hover:text-tombstone-dark">

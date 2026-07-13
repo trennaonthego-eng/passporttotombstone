@@ -155,6 +155,15 @@ export function localBusinessSchema(business: Business) {
     Services: "LocalBusiness",
   };
 
+  // business.address is either a full street address ("123 E. Allen Street,
+  // Tombstone, AZ 85638") or just "Tombstone, AZ 85638" for listings without
+  // a public street address (mostly private vacation rentals) — only the
+  // former has a street portion worth extracting.
+  const streetAddress =
+    business.address && !business.address.startsWith("Tombstone")
+      ? business.address.split(",")[0].trim()
+      : undefined;
+
   return {
     "@context": "https://schema.org",
     "@type": typeByCategory[business.category],
@@ -162,6 +171,7 @@ export function localBusinessSchema(business: Business) {
     description: business.description,
     address: {
       "@type": "PostalAddress",
+      ...(streetAddress ? { streetAddress } : {}),
       addressLocality: "Tombstone",
       addressRegion: "AZ",
       postalCode: "85638",
@@ -169,6 +179,7 @@ export function localBusinessSchema(business: Business) {
     },
     ...(business.phone ? { telephone: business.phone } : {}),
     ...(business.website ? { url: business.website } : {}),
+    ...(business.hours ? { openingHours: business.hours } : {}),
   };
 }
 

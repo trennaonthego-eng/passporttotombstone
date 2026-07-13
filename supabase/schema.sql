@@ -15,6 +15,7 @@ create table if not exists businesses (
   description text,
   story text,                  -- narrative about why this business matters
   address text,
+  hours text,                  -- free text, e.g. "Daily 10am-5pm" or "Sun service 10:30am"
   phone text,
   email text,
   website text,
@@ -28,6 +29,10 @@ create table if not exists businesses (
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
+-- Safe to re-run: adds the "hours" column if this table already existed
+-- from an earlier version of this schema.
+alter table businesses add column if not exists hours text;
 
 -- ---------------------------------------------------------------------------
 -- newsletter_signups

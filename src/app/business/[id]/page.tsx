@@ -108,6 +108,10 @@ export default async function BusinessDetailPage({
                   <dd>{business.address}</dd>
                 </div>
               )}
+              <div className="flex gap-2">
+                <dt className="font-semibold">Hours:</dt>
+                <dd>{business.hours ?? "Hours vary — call ahead"}</dd>
+              </div>
               {business.phone && (
                 <div className="flex gap-2">
                   <dt className="font-semibold">Phone:</dt>

@@ -41,11 +41,15 @@ export default function BusinessCard({ business }: { business: Business }) {
 
         <p className="text-sm leading-relaxed text-tombstone-dark/80">{business.story}</p>
 
-        {business.phone && (
-          <a href={`tel:${business.phone}`} className="text-sm text-tombstone-dark/70 hover:text-tombstone-dark">
-            {business.phone}
-          </a>
-        )}
+        <div className="space-y-0.5 text-xs text-tombstone-dark/65">
+          {business.address && <p>📍 {business.address}</p>}
+          <p>🕐 {business.hours ?? "Hours vary — call ahead"}</p>
+          {business.phone && (
+            <a href={`tel:${business.phone}`} className="block hover:text-tombstone-dark">
+              📞 {business.phone}
+            </a>
+          )}
+        </div>
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-sm">
           {/* Detail pages stay live for every business (AI SEO), but the link

@@ -35,6 +35,7 @@ export function GET() {
       ];
       if (b.subcategory) lines.push(`- Type: ${b.subcategory}`);
       if (b.address) lines.push(`- Address: ${b.address}`);
+      if (b.hours) lines.push(`- Hours: ${b.hours}`);
       if (b.phone) lines.push(`- Phone: ${b.phone}`);
       if (b.website) lines.push(`- Website: ${b.website}`);
       if (b.event_host && b.event_capacity)
