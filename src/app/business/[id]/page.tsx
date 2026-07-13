@@ -1,15 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import AddToTripButton from "@/components/AddToTripButton";
-import CopyBlock from "@/components/CopyBlock";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { businesses } from "@/data/businesses";
 import { getBusinessById } from "@/lib/business-data";
 import { buildingHistoryFor } from "@/lib/building-history";
-import { businessQrDataUrl } from "@/lib/qr";
 import { breadcrumbSchema, localBusinessSchema } from "@/lib/structured-data";
 
 // Prerender all seed businesses; VA edits (and VA-added businesses, rendered
@@ -52,10 +49,7 @@ export default async function BusinessDetailPage({
   const business = await getBusinessById(id);
   if (!business) notFound();
 
-  const [history, qrDataUrl] = await Promise.all([
-    Promise.resolve(buildingHistoryFor(business)),
-    businessQrDataUrl(business.id),
-  ]);
+  const history = buildingHistoryFor(business);
 
   return (
     <>
@@ -193,52 +187,8 @@ export default async function BusinessDetailPage({
               </div>
             </div>
 
-            {/* Auto-generated post templates */}
-            <div className="mt-14">
-              <h2 className="font-display text-2xl font-bold text-tombstone-navy">
-                Ready-to-Post Templates
-              </h2>
-              <p className="mt-2 text-sm text-tombstone-dark/70">
-                A Premier perk: copy, tweak if you like, and post.
-              </p>
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <CopyBlock
-                  label="Social media post"
-                  text={`${business.story}\n\n${business.description}\n\n📍 Find us in Tombstone, Arizona — the town too tough to die.${business.address ? `\n${business.address}` : ""}${business.phone ? `\n📞 ${business.phone}` : ""}\n\n#Tombstone #TombstoneAZ #OldWest #PassportToTombstone`}
-                />
-                <CopyBlock
-                  label="Google Business Profile post"
-                  text={`${business.description}\n\n${business.story}\n\nProudly part of Passport to Tombstone — the guide to the real Old West.${business.phone ? ` Call ${business.phone}.` : ""}`}
-                />
-              </div>
-            </div>
           </>
         )}
-
-        <div className="mt-14 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-tombstone-navy/25 bg-tombstone-light p-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-tombstone-navy/70">
-            For the building — scan or print
-          </p>
-          <Image
-            src={qrDataUrl}
-            alt={`QR code linking to the Passport to Tombstone page for ${business.name}`}
-            width={160}
-            height={160}
-            className="rounded-lg border border-tombstone-navy/10 bg-white p-2"
-            unoptimized
-          />
-          <p className="max-w-xs text-xs text-tombstone-dark/60">
-            Post this at the building — visitors scan it for the building&apos;s history and
-            what it is today.
-          </p>
-          <a
-            href={qrDataUrl}
-            download={`${business.id}-qr.png`}
-            className="text-xs font-semibold text-tombstone-red hover:underline"
-          >
-            Download QR Code
-          </a>
-        </div>
       </section>
     </>
   );

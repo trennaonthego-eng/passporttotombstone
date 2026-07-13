@@ -1,8 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import CopyBlock from "@/components/CopyBlock";
+import { businesses as seedBusinesses } from "@/data/businesses";
 
-type Tab = "inquiries" | "signups" | "events" | "businesses";
+type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit";
+
+// Post templates are a Premier perk, delivered to the business by the team —
+// never shown on the public site.
+const PAYING_PARTNERS = seedBusinesses.filter((b) => b.tier !== "free");
+
+function socialTemplate(b: (typeof seedBusinesses)[number]) {
+  return `${b.story}\n\n${b.description}\n\n📍 Find us in Tombstone, Arizona — the town too tough to die.${b.address ? `\n${b.address}` : ""}${b.phone ? `\n📞 ${b.phone}` : ""}\n\n#Tombstone #TombstoneAZ #OldWest #PassportToTombstone`;
+}
+
+function gbpTemplate(b: (typeof seedBusinesses)[number]) {
+  return `${b.description}\n\n${b.story}\n\nProudly part of Passport to Tombstone — the guide to the real Old West.${b.phone ? ` Call ${b.phone}.` : ""}`;
+}
 
 interface Inquiry {
   id: string;
@@ -73,6 +87,7 @@ export default function AdminPage() {
         signups: "/api/admin/signups",
         events: "/api/admin/town-events",
         businesses: null, // download/upload UI only, nothing to prefetch
+        toolkit: null, // renders from seed data, nothing to prefetch
       };
       const path = paths[which];
       if (path) {
@@ -236,6 +251,7 @@ export default function AdminPage() {
             ["signups", "💌", "Newsletter List", "See and download subscriber emails"],
             ["events", "📅", "Calendar Events", "Add events to the public calendar"],
             ["businesses", "📊", "Update Businesses", "Download, edit in Excel, re-upload"],
+            ["toolkit", "🧰", "Partner Toolkit", "Post templates to email paying partners"],
           ] as [Tab, string, string, string][]
         ).map(([key, icon, label, hint]) => (
           <button
@@ -348,6 +364,46 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* PARTNER TOOLKIT — templates the team emails to paying partners */}
+      {tab === "toolkit" && !loading && (
+        <div className="mt-8 space-y-8">
+          <p className="text-sm text-tombstone-dark/70">
+            These are the ready-to-post templates for paying partners. Copy them, or use
+            the email button to send them straight to the business — they never appear on
+            the public site.
+          </p>
+          {PAYING_PARTNERS.map((b) => {
+            const social = socialTemplate(b);
+            const gbp = gbpTemplate(b);
+            const emailBody = `Hi ${b.name} team,\n\nHere are your ready-to-post templates from Passport to Tombstone.\n\n--- SOCIAL MEDIA POST ---\n\n${social}\n\n--- GOOGLE BUSINESS PROFILE POST ---\n\n${gbp}\n\nPost them as-is or tweak however you like!\n\n— Passport to Tombstone`;
+            return (
+              <div key={b.id} className="rounded-xl border border-black/10 bg-tombstone-light p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="font-display text-lg font-bold text-tombstone-dark">
+                    {b.name}
+                    <span className="ml-2 rounded-full bg-tombstone-gold px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
+                      Premier
+                    </span>
+                  </p>
+                  <a
+                    href={`mailto:${b.email ?? ""}?subject=${encodeURIComponent(
+                      `Your Passport to Tombstone post templates — ${b.name}`
+                    )}&body=${encodeURIComponent(emailBody)}`}
+                    className="rounded-md bg-tombstone-navy px-4 py-2 text-sm font-semibold text-white"
+                  >
+                    ✉️ Email to business
+                  </a>
+                </div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <CopyBlock label="Social media post" text={social} />
+                  <CopyBlock label="Google Business Profile post" text={gbp} />
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
