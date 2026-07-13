@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-type Tab = "inquiries" | "signups" | "events";
+type Tab = "inquiries" | "signups" | "events" | "businesses";
 
 interface Inquiry {
   id: string;
@@ -68,21 +68,28 @@ export default function AdminPage() {
     setLoading(true);
     setError("");
     try {
-      if (which === "inquiries") {
-        const res = await authFetch("/api/admin/inquiries");
+      const paths: Record<Tab, string | null> = {
+        inquiries: "/api/admin/inquiries",
+        signups: "/api/admin/signups",
+        events: "/api/admin/town-events",
+        businesses: null, // download/upload UI only, nothing to prefetch
+      };
+      const path = paths[which];
+      if (path) {
+        const res = await authFetch(path);
         const data = await res.json();
+        // 503 = password was right but Supabase isn't connected — let the VA
+        // in and show the message instead of locking them out.
+        if (res.status === 503) {
+          setLoggedIn(true);
+          setTab(which);
+          setError(data.error);
+          return;
+        }
         if (!res.ok) throw new Error(data.error);
-        setInquiries(data.inquiries);
-      } else if (which === "signups") {
-        const res = await authFetch("/api/admin/signups");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setSignups(data.signups);
-      } else {
-        const res = await authFetch("/api/admin/town-events");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setEvents(data.events);
+        if (which === "inquiries") setInquiries(data.inquiries);
+        else if (which === "signups") setSignups(data.signups);
+        else if (which === "events") setEvents(data.events);
       }
       setTab(which);
       setLoggedIn(true);
@@ -116,6 +123,43 @@ export default function AdminPage() {
   // simple new-event form state
   const [form, setForm] = useState({ name: "", event_date: "", time_label: "", venue: "", address: "" });
   const [saving, setSaving] = useState(false);
+
+  // CSV upload state
+  const [csvBusy, setCsvBusy] = useState(false);
+  const [csvResult, setCsvResult] = useState("");
+
+  async function downloadBusinessesCsv() {
+    const res = await authFetch("/api/admin/businesses");
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Could not download.");
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tombstone-businesses.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function uploadBusinessesCsv(file: File) {
+    setCsvBusy(true);
+    setCsvResult("");
+    setError("");
+    try {
+      const text = await file.text();
+      const res = await authFetch("/api/admin/businesses", { method: "POST", body: text });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setCsvResult(`✓ ${data.count} businesses updated. Changes appear on the site within 5 minutes.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setCsvBusy(false);
+    }
+  }
 
   async function addEvent(e: React.FormEvent) {
     e.preventDefault();
@@ -181,16 +225,17 @@ export default function AdminPage() {
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-3xl font-bold text-tombstone-navy">Dashboard</h1>
       <p className="mt-1 text-sm text-tombstone-dark/70">
-        Three jobs. Pick one. Nothing here can break the website.
+        Pick a job. Nothing here can break the website.
       </p>
 
       {/* THE 3 BUTTONS */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {(
           [
             ["inquiries", "📋", "Event Inquiries", "People who want to bring events to town"],
             ["signups", "💌", "Newsletter List", "See and download subscriber emails"],
             ["events", "📅", "Calendar Events", "Add events to the public calendar"],
+            ["businesses", "📊", "Update Businesses", "Download, edit in Excel, re-upload"],
           ] as [Tab, string, string, string][]
         ).map(([key, icon, label, hint]) => (
           <button
@@ -302,6 +347,54 @@ export default function AdminPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* BUSINESSES (CSV round-trip) */}
+      {tab === "businesses" && !loading && (
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-xl border border-black/10 bg-white p-6">
+            <p className="font-display text-lg font-bold text-tombstone-dark">Step 1 — Download</p>
+            <p className="mt-2 text-sm text-tombstone-dark/70">
+              Get the current business list as a spreadsheet. Open it in Excel or Google
+              Sheets. You can change phone numbers, descriptions, stories, tiers
+              (free / featured / premier), add new rows, or fix anything that&apos;s wrong.
+            </p>
+            <button
+              type="button"
+              onClick={downloadBusinessesCsv}
+              className="mt-4 rounded-md bg-tombstone-navy px-5 py-2.5 text-sm font-semibold text-white"
+            >
+              ⬇️ Download Current CSV
+            </button>
+          </div>
+          <div className="rounded-xl border border-black/10 bg-white p-6">
+            <p className="font-display text-lg font-bold text-tombstone-dark">Step 2 — Upload</p>
+            <p className="mt-2 text-sm text-tombstone-dark/70">
+              When you&apos;re done editing, save as CSV and upload it here. The system
+              checks every row before saving — if anything&apos;s off, nothing changes and
+              you&apos;ll see exactly which rows to fix.
+            </p>
+            <label className="mt-4 block cursor-pointer rounded-lg border-2 border-dashed border-tombstone-navy/30 p-6 text-center text-sm font-semibold text-tombstone-navy hover:border-tombstone-red/60">
+              {csvBusy ? "Uploading…" : "Click to choose your edited CSV"}
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                disabled={csvBusy}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadBusinessesCsv(file);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {csvResult && (
+              <p className="mt-3 rounded-md border border-green-600/30 bg-green-600/10 p-3 text-sm font-semibold text-green-800">
+                {csvResult}
+              </p>
+            )}
           </div>
         </div>
       )}

@@ -41,10 +41,32 @@ export default function BusinessCard({ business }: { business: Business }) {
 
         <p className="text-sm leading-relaxed text-tombstone-dark/80">{business.story}</p>
 
+        {business.phone && (
+          <a href={`tel:${business.phone}`} className="text-sm text-tombstone-dark/70 hover:text-tombstone-dark">
+            {business.phone}
+          </a>
+        )}
+
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-sm">
-          <Link href={`/business/${business.id}`} className="font-semibold text-tombstone-red hover:underline">
-            Learn more →
-          </Link>
+          {/* Detail pages stay live for every business (AI SEO), but the link
+              is a paid perk: premier gets the full profile, everyone else
+              points to their own website. */}
+          {business.tier === "premium_featured" ? (
+            <Link href={`/business/${business.id}`} className="font-semibold text-tombstone-red hover:underline">
+              View Full Profile →
+            </Link>
+          ) : business.website ? (
+            <a
+              href={business.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-tombstone-red hover:underline"
+            >
+              Visit Website →
+            </a>
+          ) : (
+            <span />
+          )}
           <button
             type="button"
             onClick={() =>

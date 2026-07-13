@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import CategoryPage from "@/components/CategoryPage";
 
+// Re-render every 5 minutes so VA edits from /admin appear without a deploy.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: "Local Services in Tombstone, AZ",
   description:

@@ -169,13 +169,12 @@ const RAW: RawBusiness[] = [
 // Normalization
 // ---------------------------------------------------------------------------
 
-// Tiers are pay-to-play: only businesses with an active paid partnership get a
-// badge. The raw dataset's tier labels are ignored until partnerships are
-// signed — the two founding premier partners below are the only exceptions.
-// When a business signs up, add its id to the matching set.
+// Tiers are pay-to-play (Trenna, 2026-07-12): every business is FREE except
+// the two paying premier partners. When a business signs a $49/mo Featured or
+// $199/mo Premier partnership, add its id to the matching set.
 const PREMIER_IDS = new Set([
   "lodging_001", // Silver Spur Homestead
-  "services_007", // Team Franko - Keller Williams Southern Arizona (Trenna Hiney)
+  "services_007", // Trenna Hiney, Realtor — Team Franko Keller Williams
 ]);
 const FEATURED_IDS = new Set<string>([]);
 
@@ -193,7 +192,7 @@ const CATEGORY_MAP: Record<string, Category> = {
   Services: "Services",
 };
 
-// Homepage featured slots: paying premier partners only.
+// Homepage "Featured Businesses" slots: paying premier partners only.
 const HOMEPAGE_FEATURED_IDS = PREMIER_IDS;
 
 const now = new Date().toISOString();

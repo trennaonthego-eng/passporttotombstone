@@ -1,6 +1,6 @@
 import FilteredBusinessGrid from "@/components/FilteredBusinessGrid";
 import JsonLd from "@/components/JsonLd";
-import { getByCategory } from "@/data/businesses";
+import { getBusinessesByCategory } from "@/lib/business-data";
 import {
   breadcrumbSchema,
   categoryItemListSchema,
@@ -15,7 +15,7 @@ const TIER_ORDER: Record<string, number> = {
   free: 3,
 };
 
-export default function CategoryPage({
+export default async function CategoryPage({
   category,
   path,
   title,
@@ -26,7 +26,7 @@ export default function CategoryPage({
   title: string;
   intro: string;
 }) {
-  const items = [...getByCategory(category)].sort(
+  const items = [...(await getBusinessesByCategory(category))].sort(
     (a, b) => TIER_ORDER[a.tier] - TIER_ORDER[b.tier] || a.name.localeCompare(b.name)
   );
 

@@ -35,17 +35,33 @@ const EXPERIENCES = [
 
 const EVENT_TYPES = [
   {
+    title: "Weddings",
+    href: "/weddings",
+    copy: "Say your vows where legends walked. Ranches, historic churches, and the O.K. Corral itself.",
+  },
+  {
+    title: "Filming",
+    href: "/filming",
+    copy: "Authentic 1880s streets, desert light, and ready-to-film action venues. The real thing, not a set.",
+  },
+  {
     title: "Corporate Retreats",
-    copy: "Team building on a working ranch. Strategy sessions in a historic saloon. Your team will never forget an offsite in Tombstone.",
+    href: "/corporate-retreats",
+    copy: "Team building on a working ranch. Strategy sessions in a historic saloon. Offsites people remember.",
   },
   {
-    title: "Conferences & Festivals",
-    copy: "Film festivals, industry summits, and gatherings that need a backdrop no convention center can match.",
+    title: "Conferences",
+    href: "/conferences",
+    copy: "A walkable destination with built-in break activities and networking in real saloons.",
   },
-  {
-    title: "Weddings & Private Events",
-    copy: "Say your vows where legends walked. The whole town becomes part of your celebration.",
-  },
+];
+
+const CATEGORY_CARDS = [
+  { title: "Lodging", href: "/lodging", copy: "Inns, ranches, glamping & RV parks" },
+  { title: "Dining", href: "/dining", copy: "Saloons pouring since 1881" },
+  { title: "Attractions", href: "/attractions", copy: "Gunfights, mines & museums" },
+  { title: "Shopping", href: "/shopping", copy: "Galleries, western wear & antiques" },
+  { title: "Services", href: "/services", copy: "The people who keep the town running" },
 ];
 
 export default function HomePage() {
@@ -165,6 +181,35 @@ export default function HomePage() {
         >
           Read the Full Story — Myth vs. the Record
         </Link>
+      </section>
+
+      {/* EXPLORE BY CATEGORY */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-sm font-semibold uppercase tracking-widest text-tombstone-red">
+            Explore by Category
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
+            Find Your Way Around Town
+          </h2>
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {CATEGORY_CARDS.map((cat) => (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="group overflow-hidden rounded-2xl border border-tombstone-dark/10 bg-tombstone-light shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <PlaceholderPhoto seed={cat.title} className="h-24 w-full" />
+                <div className="p-4">
+                  <p className="font-display text-lg font-bold text-tombstone-dark group-hover:text-tombstone-red">
+                    {cat.title}
+                  </p>
+                  <p className="mt-1 text-xs text-tombstone-dark/60">{cat.copy}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* 3. FEATURED STORY PARTNERS */}
@@ -291,14 +336,21 @@ export default function HomePage() {
             we&apos;ll host them right. Venues from historic buildings to working ranches,
             for 50 to 500+ people, with a whole town as your backdrop.
           </p>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {EVENT_TYPES.map((ev) => (
-              <div key={ev.title} className="rounded-xl bg-white/5 p-6 ring-1 ring-white/10">
+              <Link
+                key={ev.title}
+                href={ev.href}
+                className="group rounded-xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:bg-white/10 hover:ring-tombstone-gold/60"
+              >
                 <h3 className="font-display text-xl font-bold text-tombstone-gold">
                   {ev.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-white/80">{ev.copy}</p>
-              </div>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-tombstone-gold/80 group-hover:text-tombstone-gold">
+                  Explore →
+                </p>
+              </Link>
             ))}
           </div>
           <div className="mt-10 text-center">

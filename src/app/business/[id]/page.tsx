@@ -5,10 +5,16 @@ import type { Metadata } from "next";
 import AddToTripButton from "@/components/AddToTripButton";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
-import { businesses, getById } from "@/data/businesses";
+import { businesses } from "@/data/businesses";
+import { getBusinessById } from "@/lib/business-data";
 import { buildingHistoryFor } from "@/lib/building-history";
 import { businessQrDataUrl } from "@/lib/qr";
 import { breadcrumbSchema, localBusinessSchema } from "@/lib/structured-data";
+
+// Prerender all seed businesses; VA edits (and VA-added businesses, rendered
+// on demand) refresh within 5 minutes without a deploy.
+export const revalidate = 300;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return businesses.map((b) => ({ id: b.id }));
@@ -20,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const business = getById(id);
+  const business = await getBusinessById(id);
   if (!business) return {};
   return {
     title: business.name,
@@ -42,7 +48,7 @@ export default async function BusinessDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const business = getById(id);
+  const business = await getBusinessById(id);
   if (!business) notFound();
 
   const [history, qrDataUrl] = await Promise.all([
