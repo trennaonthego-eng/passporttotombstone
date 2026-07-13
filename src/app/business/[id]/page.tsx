@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import AddToTripButton from "@/components/AddToTripButton";
+import CopyBlock from "@/components/CopyBlock";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { businesses } from "@/data/businesses";
@@ -137,6 +138,82 @@ export default async function BusinessDetailPage({
             </dl>
           </div>
         </div>
+
+        {/* PREMIER PERKS — full landing page treatment for paying partners */}
+        {business.tier === "premium_featured" && (
+          <>
+            {/* Current listings — Team Franko real estate placeholder until
+                Trenna supplies live listing data and photos */}
+            {business.id === "services_007" && (
+              <div className="mt-14">
+                <h2 className="font-display text-2xl font-bold text-tombstone-navy">
+                  Current Listings
+                </h2>
+                <p className="mt-2 text-sm text-tombstone-dark/70">
+                  Live listings are on their way. In the meantime, contact Trenna directly
+                  for what&apos;s on the market in Tombstone and Cochise County right now.
+                </p>
+                <div className="mt-6 grid gap-6 sm:grid-cols-3">
+                  {[1, 2, 3].map((n) => (
+                    <div
+                      key={n}
+                      className="overflow-hidden rounded-2xl border border-dashed border-tombstone-navy/25 bg-tombstone-light"
+                    >
+                      <PlaceholderPhoto seed={`listing-${n}`} className="h-32 w-full opacity-60" />
+                      <div className="p-4">
+                        <p className="font-display text-sm font-bold text-tombstone-dark/60">
+                          Listing photo &amp; details coming soon
+                        </p>
+                        <p className="mt-1 text-xs text-tombstone-dark/50">
+                          Address · Price · Beds/Baths
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Photo gallery — populated via admin once real photos exist */}
+            <div className="mt-14">
+              <h2 className="font-display text-2xl font-bold text-tombstone-navy">
+                Photo Gallery
+              </h2>
+              <p className="mt-2 text-sm text-tombstone-dark/70">
+                Real photography coming soon — these tiles are placeholders.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {["a", "b", "c", "d"].map((k) => (
+                  <PlaceholderPhoto
+                    key={k}
+                    seed={`${business.id}-gallery-${k}`}
+                    className="h-32 w-full rounded-xl"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Auto-generated post templates */}
+            <div className="mt-14">
+              <h2 className="font-display text-2xl font-bold text-tombstone-navy">
+                Ready-to-Post Templates
+              </h2>
+              <p className="mt-2 text-sm text-tombstone-dark/70">
+                A Premier perk: copy, tweak if you like, and post.
+              </p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <CopyBlock
+                  label="Social media post"
+                  text={`${business.story}\n\n${business.description}\n\n📍 Find us in Tombstone, Arizona — the town too tough to die.${business.address ? `\n${business.address}` : ""}${business.phone ? `\n📞 ${business.phone}` : ""}\n\n#Tombstone #TombstoneAZ #OldWest #PassportToTombstone`}
+                />
+                <CopyBlock
+                  label="Google Business Profile post"
+                  text={`${business.description}\n\n${business.story}\n\nProudly part of Passport to Tombstone — the guide to the real Old West.${business.phone ? ` Call ${business.phone}.` : ""}`}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="mt-14 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-tombstone-navy/25 bg-tombstone-light p-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-tombstone-navy/70">
