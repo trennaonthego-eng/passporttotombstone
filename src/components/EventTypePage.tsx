@@ -1,18 +1,17 @@
 import Link from "next/link";
+import BusinessPhoto from "@/components/BusinessPhoto";
 import JsonLd from "@/components/JsonLd";
-import PlaceholderPhoto from "@/components/PlaceholderPhoto";
-import { getById } from "@/data/businesses";
 import type { EventPageDef } from "@/data/event-pages";
+import { getAllBusinesses } from "@/lib/business-data";
 import { breadcrumbSchema } from "@/lib/structured-data";
+import type { Business } from "@/lib/types";
 
-function VenueCard({ id }: { id: string }) {
-  const b = getById(id);
-  if (!b) return null;
+function VenueCard({ b }: { b: Business }) {
   const contactHref = b.website ?? `/business/${b.id}`;
   const external = Boolean(b.website);
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-tombstone-dark/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <PlaceholderPhoto seed={b.id} className="h-36 w-full" />
+      <BusinessPhoto seed={b.id} imageUrl={b.image_url} alt={b.name} className="h-36 w-full" />
       <div className="flex flex-1 flex-col gap-1.5 p-5">
         <h3 className="font-display text-lg font-bold text-tombstone-dark">{b.name}</h3>
         {b.subcategory && (
@@ -44,7 +43,10 @@ function VenueCard({ id }: { id: string }) {
   );
 }
 
-export default function EventTypePage({ def }: { def: EventPageDef }) {
+export default async function EventTypePage({ def }: { def: EventPageDef }) {
+  const businesses = await getAllBusinesses();
+  const byId = new Map(businesses.map((b) => [b.id, b]));
+
   return (
     <>
       <JsonLd
@@ -98,9 +100,10 @@ export default function EventTypePage({ def }: { def: EventPageDef }) {
             )}
             {section.businessIds && (
               <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {section.businessIds.map((id) => (
-                  <VenueCard key={id} id={id} />
-                ))}
+                {section.businessIds.map((id) => {
+                  const b = byId.get(id);
+                  return b ? <VenueCard key={id} b={b} /> : null;
+                })}
               </div>
             )}
             {section.categoryLink && (

@@ -92,6 +92,18 @@ export async function GET(request: Request) {
   }
 
   const businesses = await getAllBusinesses();
+
+  const url = new URL(request.url);
+  if (url.searchParams.get("format") === "json") {
+    // Lightweight list for the admin UI (e.g. the Add Photos business picker)
+    // — not the full CSV shape.
+    return Response.json({
+      businesses: businesses
+        .map((b) => ({ id: b.id, name: b.name, category: b.category, image_url: b.image_url }))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    });
+  }
+
   const lines = [
     CSV_COLUMNS.join(","),
     ...businesses.map((b) =>

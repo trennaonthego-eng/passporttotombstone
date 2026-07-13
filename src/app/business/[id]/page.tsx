@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import AddToTripButton from "@/components/AddToTripButton";
+import BusinessPhoto from "@/components/BusinessPhoto";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { businesses } from "@/data/businesses";
@@ -63,7 +64,14 @@ export default async function BusinessDetailPage({
       />
 
       <section className="relative h-72 w-full overflow-hidden sm:h-96">
-        <PlaceholderPhoto seed={business.id} className="h-full w-full" />
+        <BusinessPhoto
+          seed={business.id}
+          imageUrl={business.image_url}
+          alt={business.name}
+          className="h-full w-full"
+          sizes="100vw"
+          priority
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-tombstone-dark/80 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 w-full px-4 pb-6 sm:px-6">
           <div className="mx-auto max-w-4xl">

@@ -23,17 +23,29 @@ Destination marketing platform and event hosting hub for Tombstone, Arizona.
 
 ## Admin panel (VA-friendly)
 
-`/admin` is a password-gated, three-button dashboard — no coding knowledge needed:
+`/admin` is a password-gated dashboard — no coding knowledge needed:
 
 1. **📋 Event Inquiries** — every inquiry from the events form, with a status
    dropdown (New → Contacted → Booked/Closed).
 2. **💌 Newsletter List** — all subscribers with one-click CSV download.
 3. **📅 Calendar Events** — add events that appear on the public /calendar
    within 5 minutes; remove them just as easily.
+4. **📊 Update Businesses** — download every business as a spreadsheet, edit
+   in Excel/Google Sheets (phone, hours, story, tier, add/remove rows), upload
+   back. Every row is validated before anything saves.
+5. **📸 Add Photos** — pick a business, upload a JPG/PNG/WEBP, done. The photo
+   replaces the generated placeholder art everywhere that business appears
+   (listing cards, its own page, event-type pages) within 5 minutes. Uploading
+   again for the same business replaces the old photo.
+6. **🧰 Partner Toolkit** — ready-to-post social/Google Business templates for
+   paying partners, with a one-click "email to business" button. Never shown
+   on the public site.
 
 Setup: set `ADMIN_PASSWORD` (the login you give your VA) and
 `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API → service_role)
-in Vercel's environment variables. `/admin` is blocked in robots.txt.
+in Vercel's environment variables. `/admin` is blocked in robots.txt. Photo
+storage uses a `business-photos` bucket created automatically by
+`supabase/schema.sql` — no separate Supabase dashboard step needed.
 
 ## Run locally
 
@@ -101,10 +113,13 @@ forms accept submissions without persisting until Supabase is connected.
 
 ## Before public launch (known gaps)
 
-- **Business images are placeholders** — styled desert-scene tiles, not photography.
-  A few businesses have `image_url` values that hotlink discovertombstone.com; those are stored but
-  deliberately not rendered (copyright + hotlinking). Replace with owned or
-  licensed photography, then render `image_url` in `src/components/BusinessCard.tsx`.
+- **Most business images are still placeholders** — styled desert-scene tiles,
+  not photography. Upload real photos via `/admin` → 📸 Add Photos (see
+  above) — one photo per business, appears everywhere that business is
+  listed. A few businesses have `image_url` values that hotlink
+  discovertombstone.com from the original seed data; those are stored but
+  deliberately never rendered (copyright + hotlinking) — they'll keep showing
+  the placeholder until someone uploads a real photo.
 - **Tiers are pay-to-play** — only Silver Spur Homestead and Team Franko carry
   Premier badges; every other listing is a free Story Partner. When a business
   signs a paid partnership, add its id to `PREMIER_IDS` or `FEATURED_IDS` in

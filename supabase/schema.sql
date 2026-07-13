@@ -152,3 +152,18 @@ create policy "owner update own itineraries"
 
 create policy "owner delete own itineraries"
   on itineraries for delete using (auth.uid() = user_id);
+
+-- ---------------------------------------------------------------------------
+-- Storage: business photos
+-- Public bucket so uploaded photos load on the public site without signed
+-- URLs. Uploads/replacements happen only through the admin API using the
+-- service-role key (which bypasses storage RLS entirely), so no insert/update
+-- policy is needed here — only public read.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('business-photos', 'business-photos', true)
+on conflict (id) do nothing;
+
+create policy "public read business photos"
+  on storage.objects for select
+  using (bucket_id = 'business-photos');

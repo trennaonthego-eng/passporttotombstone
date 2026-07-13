@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import CopyBlock from "@/components/CopyBlock";
 import { businesses as seedBusinesses } from "@/data/businesses";
 
-type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit";
+type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit" | "photos";
 
 // Post templates are a Premier perk, delivered to the business by the team —
 // never shown on the public site.
@@ -47,6 +47,13 @@ interface TownEvent {
   address: string;
 }
 
+interface BusinessListItem {
+  id: string;
+  name: string;
+  category: string;
+  image_url: string;
+}
+
 const STATUS_LABELS: Record<string, string> = {
   new: "🆕 New",
   contacted: "📞 Contacted",
@@ -64,6 +71,7 @@ export default function AdminPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [signups, setSignups] = useState<Signup[]>([]);
   const [events, setEvents] = useState<TownEvent[]>([]);
+  const [businessList, setBusinessList] = useState<BusinessListItem[]>([]);
 
   const authFetch = useCallback(
     (path: string, init?: RequestInit) =>
@@ -88,6 +96,7 @@ export default function AdminPage() {
         events: "/api/admin/town-events",
         businesses: null, // download/upload UI only, nothing to prefetch
         toolkit: null, // renders from seed data, nothing to prefetch
+        photos: "/api/admin/businesses?format=json",
       };
       const path = paths[which];
       if (path) {
@@ -105,6 +114,7 @@ export default function AdminPage() {
         if (which === "inquiries") setInquiries(data.inquiries);
         else if (which === "signups") setSignups(data.signups);
         else if (which === "events") setEvents(data.events);
+        else if (which === "photos") setBusinessList(data.businesses);
       }
       setTab(which);
       setLoggedIn(true);
@@ -142,6 +152,43 @@ export default function AdminPage() {
   // CSV upload state
   const [csvBusy, setCsvBusy] = useState(false);
   const [csvResult, setCsvResult] = useState("");
+
+  // Photo upload state
+  const [photoBusinessId, setPhotoBusinessId] = useState("");
+  const [photoSearch, setPhotoSearch] = useState("");
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoResult, setPhotoResult] = useState("");
+
+  async function uploadPhoto(file: File) {
+    if (!photoBusinessId) {
+      setError("Pick a business first.");
+      return;
+    }
+    setPhotoBusy(true);
+    setPhotoResult("");
+    setError("");
+    try {
+      const form = new FormData();
+      form.append("business_id", photoBusinessId);
+      form.append("file", file);
+      const res = await fetch("/api/admin/photo", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${password}` },
+        body: form,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setBusinessList((list) =>
+        list.map((b) => (b.id === photoBusinessId ? { ...b, image_url: data.image_url } : b))
+      );
+      const name = businessList.find((b) => b.id === photoBusinessId)?.name ?? "that business";
+      setPhotoResult(`✓ Photo saved for ${name}. It appears on the site within 5 minutes.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
 
   async function downloadBusinessesCsv() {
     const res = await authFetch("/api/admin/businesses");
@@ -251,6 +298,7 @@ export default function AdminPage() {
             ["signups", "💌", "Newsletter List", "See and download subscriber emails"],
             ["events", "📅", "Calendar Events", "Add events to the public calendar"],
             ["businesses", "📊", "Update Businesses", "Download, edit in Excel, re-upload"],
+            ["photos", "📸", "Add Photos", "Swap the placeholder art for real photos"],
             ["toolkit", "🧰", "Partner Toolkit", "Post templates to email paying partners"],
           ] as [Tab, string, string, string][]
         ).map(([key, icon, label, hint]) => (
@@ -451,6 +499,86 @@ export default function AdminPage() {
                 {csvResult}
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* PHOTOS */}
+      {tab === "photos" && !loading && (
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-xl border border-black/10 bg-white p-6">
+            <p className="font-display text-lg font-bold text-tombstone-dark">
+              Select a business
+            </p>
+            <input
+              type="text"
+              placeholder="Search by name…"
+              value={photoSearch}
+              onChange={(e) => setPhotoSearch(e.target.value)}
+              className={`${input} mt-4`}
+            />
+            <div className="mt-3 max-h-80 overflow-y-auto rounded-md border border-black/10">
+              {businessList
+                .filter((b) => b.name.toLowerCase().includes(photoSearch.toLowerCase()))
+                .map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setPhotoBusinessId(b.id)}
+                    className={`flex w-full items-center justify-between border-b border-black/5 px-3 py-2 text-left text-sm last:border-b-0 ${
+                      photoBusinessId === b.id
+                        ? "bg-tombstone-red/10 font-semibold text-tombstone-red"
+                        : "hover:bg-tombstone-light"
+                    }`}
+                  >
+                    <span>{b.name}</span>
+                    <span className="text-xs text-tombstone-dark/50">
+                      {b.image_url.includes(".supabase.co/storage/") ? "📷 has photo" : b.category}
+                    </span>
+                  </button>
+                ))}
+              {businessList.length === 0 && (
+                <p className="p-3 text-sm text-tombstone-dark/50">No businesses found.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-black/10 bg-white p-6">
+            <p className="font-display text-lg font-bold text-tombstone-dark">Upload a photo</p>
+            <p className="mt-2 text-sm text-tombstone-dark/70">
+              {photoBusinessId
+                ? `Uploading for: ${businessList.find((b) => b.id === photoBusinessId)?.name}`
+                : "Pick a business on the left first."}
+            </p>
+            <label
+              className={`mt-4 block rounded-lg border-2 border-dashed p-6 text-center text-sm font-semibold ${
+                photoBusinessId
+                  ? "cursor-pointer border-tombstone-navy/30 text-tombstone-navy hover:border-tombstone-red/60"
+                  : "cursor-not-allowed border-black/10 text-tombstone-dark/30"
+              }`}
+            >
+              {photoBusy ? "Uploading…" : "Click to choose a photo (JPG, PNG, or WEBP)"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                disabled={!photoBusinessId || photoBusy}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadPhoto(file);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {photoResult && (
+              <p className="mt-3 rounded-md border border-green-600/30 bg-green-600/10 p-3 text-sm font-semibold text-green-800">
+                {photoResult}
+              </p>
+            )}
+            <p className="mt-4 text-xs text-tombstone-dark/50">
+              One photo per business — uploading a new one replaces the old one. It becomes
+              the picture shown on the listing card and the business page.
+            </p>
           </div>
         </div>
       )}

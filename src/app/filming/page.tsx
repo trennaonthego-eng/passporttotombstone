@@ -4,6 +4,9 @@ import { getEventPage } from "@/data/event-pages";
 
 const def = getEventPage("filming")!;
 
+// Re-render every 5 minutes so VA edits (photos, addresses) from /admin appear without a deploy.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: def.title,
   description: def.metaDescription,
