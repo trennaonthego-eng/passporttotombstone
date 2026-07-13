@@ -8,12 +8,23 @@ const STOPWORDS = new Set([
   "what", "where", "when", "how", "do", "does", "some", "any", "good", "best",
 ]);
 
+// Cheap singularization so "saloons"/"gunfights"/"tours" match the singular
+// forms used in business copy ("saloon", "gunfight", "tour"). Not a real
+// stemmer, just strips a trailing "s" — good enough for this vocabulary.
+function singularize(word: string): string {
+  if (word.length > 3 && word.endsWith("s") && !word.endsWith("ss")) {
+    return word.slice(0, -1);
+  }
+  return word;
+}
+
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 2 && !STOPWORDS.has(w));
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w))
+    .map(singularize);
 }
 
 export interface ConciergeMatch {
@@ -70,23 +81,84 @@ const CATEGORY_HINTS: Record<string, string> = {
   stay: "Lodging",
   sleep: "Lodging",
   hotel: "Lodging",
+  lodging: "Lodging",
   eat: "Dining",
   food: "Dining",
   drink: "Dining",
   saloon: "Dining",
+  restaurant: "Dining",
+  dining: "Dining",
   see: "Attractions",
   do: "Attractions",
+  visit: "Attractions",
   gunfight: "Attractions",
+  mine: "Attractions",
+  museum: "Attractions",
+  attraction: "Attractions",
   shop: "Shopping",
+  shopping: "Shopping",
   wedding: "Services",
   event: "Services",
   retreat: "Services",
 };
 
-export function ruleBasedReply(message: string): { reply: string; matches: ConciergeMatch[] } {
-  const matches = findMatches(message, 5);
+function hintedCategoryFor(message: string): string | undefined {
   const lower = message.toLowerCase();
-  const hintedCategory = Object.entries(CATEGORY_HINTS).find(([k]) => lower.includes(k))?.[1];
+  return Object.entries(CATEGORY_HINTS).find(([k]) => lower.includes(k))?.[1];
+}
+
+/** findMatches() plus a category fallback: phrasing like "where should I
+ * stay" or "what should I do" rarely shares literal words with business
+ * copy, so a detected category hint (stay → Lodging) pulls top businesses
+ * from that category directly instead of relying on keyword overlap alone. */
+function getMatches(message: string, limit: number): ConciergeMatch[] {
+  const keywordMatches = findMatches(message, limit);
+  const hintedCategory = hintedCategoryFor(message);
+  if (!hintedCategory) return keywordMatches;
+
+  const seen = new Set(keywordMatches.map((m) => m.item.id));
+  const categoryMatches: ConciergeMatch[] = businesses
+    .filter((b) => b.category === hintedCategory && !seen.has(b.id))
+    .slice(0, limit - keywordMatches.length)
+    .map((b) => ({
+      item: { id: b.id, kind: "business", name: b.name, category: b.category },
+      score: 0,
+      blurb: b.story,
+    }));
+
+  return [...keywordMatches, ...categoryMatches].slice(0, limit);
+}
+
+// What this product actually is — the concierge needs to know this about
+// itself, not just the business directory, or it fumbles basic "what is
+// this site" questions.
+export const SITE_DESCRIPTION =
+  "An immersive digital travel guide to Tombstone, Arizona, featuring an interactive trip planner, AI-driven concierge, and cinematic storytelling to help visitors experience the legendary Old West.";
+
+const IDENTITY_PATTERNS = [
+  /what (is|are) (this|passport|you)/,
+  /who are you/,
+  /what (do|can) you do/,
+  /what('s| is) this (site|website|app|place)/,
+  /tell me about (this|yourself|passport)/,
+  /how does this work/,
+];
+
+function isIdentityQuestion(message: string): boolean {
+  const lower = message.toLowerCase();
+  return IDENTITY_PATTERNS.some((re) => re.test(lower));
+}
+
+export function ruleBasedReply(message: string): { reply: string; matches: ConciergeMatch[] } {
+  if (isIdentityQuestion(message)) {
+    return {
+      reply: `I'm the Passport to Tombstone concierge. ${SITE_DESCRIPTION} Ask me about lodging, saloons, gunfights, mine tours, shopping, or hosting an event, and I'll pull real spots from the Passport and help you build a trip.`,
+      matches: [],
+    };
+  }
+
+  const matches = getMatches(message, 5);
+  const hintedCategory = hintedCategoryFor(message);
 
   if (matches.length === 0) {
     return {
@@ -117,7 +189,7 @@ export async function anthropicReply(
   history: { role: "user" | "assistant"; content: string }[]
 ): Promise<AnthropicReplyResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  const matches = findMatches(message, 8);
+  const matches = getMatches(message, 8);
 
   if (!apiKey) {
     const fallback = ruleBasedReply(message);
@@ -128,7 +200,7 @@ export async function anthropicReply(
     .map((m) => `- [${m.item.kind}:${m.item.id}] ${m.item.name} (${m.item.category ?? ""}) — ${m.blurb}`)
     .join("\n");
 
-  const systemPrompt = `You are the Passport to Tombstone concierge — a warm, knowledgeable guide to Tombstone, Arizona (the real town, 1,400 residents, "too tough to die"). Help visitors plan an itinerary using ONLY the businesses/events listed below; do not invent businesses, addresses, or historical claims. Keep replies to 2-3 sentences, conversational, no corny Old West clichés. If nothing below fits, say so honestly and suggest browsing the site's categories instead.
+  const systemPrompt = `You are the Passport to Tombstone concierge — a warm, knowledgeable guide to Tombstone, Arizona (the real town, 1,400 residents, "too tough to die"). This product, Passport to Tombstone, is: ${SITE_DESCRIPTION} If asked what this site is, who you are, or what you can do, answer with that description in your own words — don't dodge it or talk about unrelated businesses. Otherwise, help visitors plan an itinerary using ONLY the businesses/events listed below; do not invent businesses, addresses, or historical claims. Keep replies to 2-3 sentences, conversational, no corny Old West clichés. If nothing below fits, say so honestly and suggest browsing the site's categories instead.
 
 Available matches for this query:
 ${catalog || "(none matched — tell the visitor to browse Lodging, Dining, Attractions, Shopping, Services, or the Events Calendar)"}`;
