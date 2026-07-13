@@ -9,14 +9,15 @@ Destination marketing platform and event hosting hub for Tombstone, Arizona.
 - **Homepage** (`/`) — hero, Tombstone story, featured Story Partners, Where to Stay, Saloon Stories, What to Do, Event Hub, Made in Tombstone, real events calendar (7 recurring/annual town events), newsletter signup, FAQ (with FAQPage schema)
 - **Category pages** — `/lodging` (30), `/dining` (16), `/attractions` (20), `/shopping` (40), `/services` (20) — 126 businesses total, all with story-first cards, tier badges, real addresses/phones where known, and LocalBusiness + BreadcrumbList schema
 - **Events page** (`/events`) — 5 event-host venues with capacities (Silver Spur Homestead, Tombstone Monument Guest Ranch, O.K. Corral, The Saloon Theatre, The Shootout Arena) plus historic town venues, event types, and a working inquiry form
-- **Partnerships page** (`/partnerships`) — all 5 tiers (Free / $49 / $199 / $499 / $199 sponsor) plus FAQ
+- **Partnerships page** (`/partnerships`) — Free / Featured $49 / Premier $199 / Newsletter Sponsor $25, each tier's CTA goes to `/upgrade`, plus FAQ
+- **Pay-to-upgrade checkout** (`/upgrade`) — pick a tier, search-select your listing (or just give a business name for Newsletter Sponsor), pay via Stripe Checkout. A webhook (`/api/stripe/webhook`), not the redirect, is what actually grants the upgrade once payment clears — see "Set up Stripe" below
 - **API routes** — `/api/newsletter` and `/api/event-inquiry` write to Supabase; both degrade gracefully (accept + log) until Supabase env vars are set
 - **AI SEO** — Organization/FAQPage/LocalBusiness/BreadcrumbList/Event JSON-LD and `/llms.txt`
 - **Seed data** — 126 businesses in `src/data/businesses.ts` (the single source of truth, raw dataset + normalizer); town events in `src/data/events.ts` and `src/data/calendar-events.ts`; `supabase/seed.sql` is generated from the business data
 - **Page-curl navigation** — routes transition with a book-page-turn effect (Next.js View Transitions API); respects `prefers-reduced-motion`
 - **1880s photography** — real, public-domain 1881 photo of Allen Street (C.S. Fly) in the homepage hero
 - **Calendar page** (`/calendar`) — 23 dated 2026 town events grouped by month, with Google Maps links and Event schema
-- **Business detail pages + QR codes** (`/business/[id]`) — one page per business split into "The Building" (honest historic context) and "Today" (current business info), each with a downloadable QR code linking back to that page for physical placement
+- **Business detail pages** (`/business/[id]`) — one page per business split into "The Building" (honest historic context) and "Today" (current business info); stays live for every business (AI SEO), but only linked from listing cards for Premier partners — everyone else's card links to their own website
 - **Trip planner** — "Add to Trip" on every business card, a floating trip tray (persists via localStorage, no account needed), and a "Save & Get Share Link" flow that publishes to `/trip/[slug]` once Supabase is connected
 - **AI concierge** — floating chat widget that answers questions and suggests real businesses/events from the site's own data; works today via a local keyword matcher, upgrades to real Claude replies the moment `ANTHROPIC_API_KEY` is set
 - **Accounts** — email magic-link sign-in (Supabase Auth) at `/account` to save trips across devices; itinerary saving works anonymously too
@@ -94,7 +95,39 @@ forms accept submissions without persisting until Supabase is connected.
      Without it, the concierge still works using the local keyword matcher.
 3. Click **Deploy**. Every future `git push` to `main` redeploys automatically.
 
-### 4. Verify
+### 4. Set up Stripe (optional — pay-to-upgrade at `/upgrade`)
+
+Skip this if you're not ready to take payments yet — the site works fine without
+it, the `/upgrade` form just shows "Payments aren't set up yet."
+
+1. Go to https://dashboard.stripe.com and create an account (or use an
+   existing one). Toggle **Test mode** on while you try this out — switch to
+   live mode later when you're ready for real charges.
+2. **Developers → API keys** → copy the **Secret key** → Vercel env var
+   `STRIPE_SECRET_KEY`.
+3. **Product catalog → Add product** — create three, each with a **recurring**
+   monthly price:
+   - "Featured Story Partner" — $49.00/month → copy its Price ID (starts `price_`) → `STRIPE_PRICE_FEATURED`
+   - "Premier Story Partner" — $199.00/month → → `STRIPE_PRICE_PREMIER`
+   - "Newsletter Sponsor" — $25.00/month → → `STRIPE_PRICE_SPONSOR`
+4. **Developers → Webhooks → Add endpoint**:
+   - Endpoint URL: `https://YOUR_SITE/api/stripe/webhook`
+   - Events to send: `checkout.session.completed` and `customer.subscription.deleted`
+   - After creating it, click the endpoint → **Signing secret** → copy →
+     `STRIPE_WEBHOOK_SECRET`
+5. Add all five values (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+   `STRIPE_PRICE_FEATURED`, `STRIPE_PRICE_PREMIER`, `STRIPE_PRICE_SPONSOR`) as
+   Vercel environment variables, then redeploy (Vercel → Deployments → ⋯ →
+   Redeploy) so the new variables take effect.
+6. Test it: visit `/upgrade`, use [Stripe's test card](https://docs.stripe.com/testing)
+   `4242 4242 4242 4242` with any future expiry/CVC. Confirm the business's
+   tier updates in Supabase **Table Editor → businesses** and a row appears in
+   **partnerships** within a minute or two (the webhook, not the redirect, is
+   what grants the upgrade).
+7. When ready for real payments, switch Stripe out of Test mode, swap in the
+   live secret key / price IDs / webhook secret, and redeploy.
+
+### 5. Verify
 
 - Homepage loads with featured partners.
 - Submit the newsletter form, then check Supabase **Table Editor → newsletter_signups**.
@@ -102,6 +135,7 @@ forms accept submissions without persisting until Supabase is connected.
 - Add something to the trip tray, hit **Save & Get Share Link**, check
   **Table Editor → itineraries**, and confirm the `/trip/[slug]` link loads.
 - Sign in at `/account` with your email and confirm the magic-link email arrives.
+- If Stripe is set up, run a test upgrade (see step 4.6 above).
 - Validate structured data at https://search.google.com/test/rich-results.
 
 ## Photo credits

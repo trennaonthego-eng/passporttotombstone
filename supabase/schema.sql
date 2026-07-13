@@ -50,16 +50,27 @@ create table if not exists newsletter_signups (
 create table if not exists partnerships (
   id uuid primary key default uuid_generate_v4(),
   business_id text references businesses(id),
-  partnership_type text,       -- "story" | "featured" | "premier" | "event_host" | "newsletter_sponsor"
+  business_name text,          -- set for standalone newsletter sponsors with no business_id
+  partnership_type text,       -- "featured" | "premier" | "newsletter_sponsor"
   tier text,
   monthly_price numeric,
-  status text default 'pending', -- "active" | "pending" | "expired"
+  status text default 'pending', -- "active" | "pending" | "expired" | "canceled"
   starts_at timestamptz,
   expires_at timestamptz,
   contact_email text,
   contact_phone text,
+  stripe_customer_id text,
+  stripe_subscription_id text,
   created_at timestamptz default now()
 );
+
+-- Safe to re-run: adds Stripe tracking + standalone-sponsor columns if this
+-- table already existed from an earlier version of this schema.
+alter table partnerships add column if not exists business_name text;
+alter table partnerships add column if not exists stripe_customer_id text;
+alter table partnerships add column if not exists stripe_subscription_id text;
+create unique index if not exists partnerships_stripe_subscription_id_key
+  on partnerships (stripe_subscription_id) where stripe_subscription_id is not null;
 
 -- ---------------------------------------------------------------------------
 -- event_inquiries

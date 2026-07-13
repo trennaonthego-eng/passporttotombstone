@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/structured-data";
 
@@ -20,6 +21,7 @@ const TIERS = [
       "Basic contact info",
     ],
     cta: "Get Listed Free",
+    href: "#contact",
   },
   {
     icon: "⭐",
@@ -33,6 +35,7 @@ const TIERS = [
       "Homepage rotation in \"Featured Businesses\"",
     ],
     cta: "Go Featured",
+    href: "/upgrade?tier=featured",
   },
   {
     icon: "👑",
@@ -48,6 +51,7 @@ const TIERS = [
       "Featured in all 4 monthly newsletters",
     ],
     cta: "Go Premier",
+    href: "/upgrade?tier=premier",
   },
   {
     icon: "🎫",
@@ -59,6 +63,7 @@ const TIERS = [
       "Standalone — no business listing required",
     ],
     cta: "Sponsor the Newsletter",
+    href: "/upgrade?tier=newsletter_sponsor",
   },
 ];
 
@@ -136,8 +141,8 @@ export default function PartnershipsPage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#contact"
+              <Link
+                href={tier.href}
                 className={`mt-6 rounded-md px-5 py-2.5 text-center text-sm font-semibold transition ${
                   tier.highlight
                     ? "bg-tombstone-red text-white hover:bg-tombstone-red/90"
@@ -145,7 +150,7 @@ export default function PartnershipsPage() {
                 }`}
               >
                 {tier.cta}
-              </a>
+              </Link>
             </div>
           ))}
         </div>
