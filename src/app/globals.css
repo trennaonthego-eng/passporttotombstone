@@ -49,7 +49,14 @@ body {
    edge like a book page turning; the incoming page settles in from the left.
    Powered by the browser View Transitions API via React's <ViewTransition>. */
 ::view-transition-group(root) {
-  perspective: 2400px;
+  perspective: 1800px;
+  perspective-origin: 15% 50%;
+}
+/* The image-pair is the direct parent of ::view-transition-old/new — without
+   preserve-3d here, the rotateY() below gets flattened to 2D and the whole
+   effect is invisible no matter how big the angle is. This is the fix. */
+::view-transition-image-pair(root) {
+  transform-style: preserve-3d;
 }
 
 ::view-transition-group(site-chrome) {
@@ -65,31 +72,37 @@ body {
 
 ::view-transition-old(.page-curl-out) {
   transform-origin: right center;
-  box-shadow: -40px 0 60px -20px rgba(20, 14, 8, 0.4);
-  animation: 420ms cubic-bezier(0.4, 0, 0.2, 1) both curl-out;
+  animation: 520ms cubic-bezier(0.4, 0, 0.2, 1) both curl-out;
 }
 ::view-transition-new(.page-curl-in) {
   transform-origin: left center;
-  animation: 460ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both curl-in;
+  animation: 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both curl-in;
 }
 
 @keyframes curl-out {
   0% {
-    transform: rotateY(0deg) translateZ(0);
+    transform: rotateY(0deg) translateZ(0) translateX(0);
+    filter: brightness(1) drop-shadow(0 0 0 rgba(20, 14, 8, 0));
     opacity: 1;
   }
+  30% {
+    filter: brightness(1.15) drop-shadow(-30px 10px 40px rgba(20, 14, 8, 0.35));
+  }
   100% {
-    transform: rotateY(-24deg) translateZ(-80px);
+    transform: rotateY(-70deg) translateZ(-180px) translateX(-6%);
+    filter: brightness(0.85) drop-shadow(-10px 5px 20px rgba(20, 14, 8, 0.15));
     opacity: 0;
   }
 }
 @keyframes curl-in {
   0% {
-    transform: rotateY(18deg) translateZ(-60px);
+    transform: rotateY(35deg) translateZ(-140px) translateX(4%);
+    filter: brightness(0.9);
     opacity: 0;
   }
   100% {
-    transform: rotateY(0deg) translateZ(0);
+    transform: rotateY(0deg) translateZ(0) translateX(0);
+    filter: brightness(1);
     opacity: 1;
   }
 }
