@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ItineraryTray from "@/components/ItineraryTray";
 import ConciergeWidget from "@/components/ConciergeWidget";
+import { ConciergeProvider } from "@/lib/concierge-context";
 import { ItineraryProvider } from "@/lib/itinerary-context";
 import { AuthProvider } from "@/lib/auth-context";
 
@@ -70,17 +71,19 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <AuthProvider>
           <ItineraryProvider>
-            <div style={{ viewTransitionName: "site-chrome" }}>
-              <Header />
-            </div>
-            <main className="flex-1">
-              <ViewTransition enter="page-curl-in" exit="page-curl-out" default="none">
-                {children}
-              </ViewTransition>
-            </main>
-            <Footer />
-            <ItineraryTray />
-            <ConciergeWidget />
+            <ConciergeProvider>
+              <div style={{ viewTransitionName: "site-chrome" }}>
+                <Header />
+              </div>
+              <main className="flex-1">
+                <ViewTransition enter="page-curl-in" exit="page-curl-out" default="none">
+                  {children}
+                </ViewTransition>
+              </main>
+              <Footer />
+              <ItineraryTray />
+              <ConciergeWidget />
+            </ConciergeProvider>
           </ItineraryProvider>
         </AuthProvider>
       </body>

@@ -28,8 +28,6 @@ export default function ItineraryTray() {
     }
   }
 
-  if (items.length === 0 && !isOpen) return null;
-
   return (
     <>
       {!isOpen && (
@@ -38,10 +36,12 @@ export default function ItineraryTray() {
           onClick={() => setOpen(true)}
           className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-tombstone-red px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/30 transition hover:bg-[#b8532e]"
         >
-          🧭 My Trip
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-xs font-bold text-tombstone-red">
-            {items.length}
-          </span>
+          🧭 {items.length > 0 ? "My Trip" : "Plan My Trip"}
+          {items.length > 0 && (
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-xs font-bold text-tombstone-red">
+              {items.length}
+            </span>
+          )}
         </button>
       )}
 
@@ -59,11 +59,30 @@ export default function ItineraryTray() {
             </button>
           </div>
 
+          {items.length > 0 && (
+            <div className="flex items-center justify-between gap-3 border-b border-tombstone-dark/10 bg-tombstone-light px-4 py-2.5 text-center">
+              {Object.entries(
+                items.reduce<Record<string, number>>((acc, item) => {
+                  const key = item.category ?? "Other";
+                  acc[key] = (acc[key] ?? 0) + 1;
+                  return acc;
+                }, {})
+              ).map(([category, count]) => (
+                <div key={category} className="flex-1">
+                  <p className="font-display text-lg font-bold text-tombstone-navy">{count}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-tombstone-dark/50">
+                    {category}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto p-3">
             {items.length === 0 ? (
               <p className="p-4 text-center text-sm text-tombstone-dark/60">
                 Nothing added yet. Tap &ldquo;Add to Trip&rdquo; on any business, event, or ask
-                the concierge to build one for you.
+                the Marshal to build one for you.
               </p>
             ) : (
               <ul className="space-y-2">

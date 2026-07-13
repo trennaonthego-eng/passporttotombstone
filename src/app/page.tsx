@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import BusinessCard from "@/components/BusinessCard";
+import InteractiveGuideSection from "@/components/InteractiveGuideSection";
 import JsonLd from "@/components/JsonLd";
 import NewsletterForm from "@/components/NewsletterForm";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
@@ -109,13 +110,14 @@ export default function HomePage() {
             fill="var(--color-tombstone-light)"
           />
         </svg>
-        <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-24 text-center sm:px-6">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.4em] text-tombstone-gold sm:text-sm">
-            Tombstone · Arizona · Est. 1879
+        <div className="relative mx-auto max-w-5xl px-4 pb-24 pt-24 text-center sm:px-6">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.5em] text-tombstone-gold sm:text-sm">
+            Est. 1879 · Cochise County, Arizona
           </p>
-          <h1 className="font-display text-5xl font-semibold leading-[1.05] text-[#f5eee0] sm:text-8xl">
+          <p className="font-display text-lg font-medium uppercase tracking-[0.3em] text-[#f5eee0]/80 sm:text-xl">
             Passport to
-            <br />
+          </p>
+          <h1 className="font-display text-[4.25rem] font-bold uppercase leading-[0.9] tracking-tight text-[#f5eee0] sm:text-[9rem]">
             Tombstone
           </h1>
           <div className="mx-auto mt-7 flex max-w-xs items-center justify-center gap-4 text-tombstone-gold">
@@ -146,10 +148,40 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* scroll cue */}
+        <div className="absolute bottom-24 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-[#f5eee0]/50 sm:bottom-28">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.4em]">Scroll</span>
+          <span className="h-8 w-px animate-pulse bg-[#f5eee0]/40" />
+        </div>
+
         <p className="absolute bottom-3 right-4 z-10 text-[10px] tracking-wide text-[#f5eee0]/40 sm:bottom-4 sm:right-6">
           Allen Street, Tombstone, 1881 — photograph by C. S. Fly, public domain
         </p>
       </section>
+
+      {/* STAT BAR — verified facts only, no invented data */}
+      <section className="bg-tombstone-dark py-10 text-white">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 text-center sm:grid-cols-4 sm:px-6">
+          {[
+            { value: "1879", label: "Town Founded" },
+            { value: "1,400", label: "Residents Today" },
+            { value: "30 sec", label: "The Gunfight, 1881" },
+            { value: "$40M+", label: "Silver Mined (est.)" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <p className="font-display text-3xl font-bold text-tombstone-gold sm:text-4xl">
+                {stat.value}
+              </p>
+              <p className="mt-1 text-[11px] font-semibold uppercase tracking-widest text-white/60 sm:text-xs">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <InteractiveGuideSection />
 
       {/* 2. THE TOMBSTONE STORY */}
       <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">

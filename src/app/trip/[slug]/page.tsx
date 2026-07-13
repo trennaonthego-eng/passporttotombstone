@@ -6,7 +6,7 @@ import type { Itinerary, ItineraryItem } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "A Shared Tombstone Trip",
-  description: "A trip itinerary built with the Passport to Tombstone concierge.",
+  description: "A trip itinerary built with Passport to Tombstone's interactive trip planner.",
 };
 
 async function getItinerary(slug: string): Promise<Itinerary | null> {
@@ -41,7 +41,7 @@ export default async function TripPage({ params }: { params: Promise<{ slug: str
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">{itinerary.title}</h1>
         <p className="mt-3 text-sm text-white/70">
-          Built with the Passport to Tombstone concierge — {itinerary.items.length} stop
+          Built with Passport to Tombstone&apos;s trip planner — {itinerary.items.length} stop
           {itinerary.items.length === 1 ? "" : "s"}.
         </p>
 

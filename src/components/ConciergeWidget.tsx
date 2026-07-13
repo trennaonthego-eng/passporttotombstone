@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { ItineraryItem } from "@/lib/types";
+import { useConcierge } from "@/lib/concierge-context";
 import { useItinerary } from "@/lib/itinerary-context";
 
 interface ChatMessage {
@@ -13,11 +14,11 @@ interface ChatMessage {
 const GREETING: ChatMessage = {
   role: "assistant",
   content:
-    "Howdy — I'm the Passport concierge. Tell me what you're after (lodging, saloons, gunfights, an event venue, whatever) and I'll pull real Tombstone spots and help build your trip.",
+    "Howdy — I'm the Marshal. Tell me what you're after (lodging, saloons, gunfights, an event venue, whatever) and I'll pull real Tombstone spots and help build your trip.",
 };
 
 export default function ConciergeWidget() {
-  const [open, setOpen] = useState(false);
+  const { isOpen: open, setOpen } = useConcierge();
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -76,18 +77,18 @@ export default function ConciergeWidget() {
           onClick={() => setOpen(true)}
           className="fixed bottom-5 left-5 z-40 flex items-center gap-2 rounded-full bg-tombstone-navy px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-black/30 transition hover:bg-[#2a1e15]"
         >
-          💬 Ask the Concierge
+          🤠 Ask the Marshal
         </button>
       )}
 
       {open && (
         <div className="fixed bottom-5 left-5 z-40 flex max-h-[70vh] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-tombstone-dark/10 bg-white shadow-2xl">
           <div className="flex items-center justify-between border-b border-tombstone-dark/10 bg-tombstone-navy px-4 py-3">
-            <h2 className="font-display text-base font-semibold text-white">Tombstone Concierge</h2>
+            <h2 className="font-display text-base font-semibold text-white">The Marshal</h2>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Close concierge"
+              aria-label="Close chat with the Marshal"
               className="text-white/70 hover:text-white"
             >
               ✕

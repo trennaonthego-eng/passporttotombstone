@@ -104,7 +104,7 @@ export default function AccountPage() {
             <p className="mt-3 text-sm text-tombstone-dark/60">Loading your trips…</p>
           ) : trips.length === 0 ? (
             <p className="mt-3 text-sm text-tombstone-dark/60">
-              No saved trips yet. Build one with the trip tray or the concierge, then hit
+              No saved trips yet. Build one with the trip tray or the Marshal, then hit
               &ldquo;Save &amp; Get Share Link&rdquo; while signed in.
             </p>
           ) : (
