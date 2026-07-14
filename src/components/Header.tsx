@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/shopping", label: "Shopping" },
   { href: "/services", label: "Services" },
   { href: "/calendar", label: "Calendar" },
+  { href: "/passport", label: "My Passport" },
   { href: "/events", label: "Bring Your Event Here" },
   { href: "/partnerships", label: "Partner With Us" },
 ];

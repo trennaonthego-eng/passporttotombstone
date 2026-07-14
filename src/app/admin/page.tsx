@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import CopyBlock from "@/components/CopyBlock";
 import { businesses as seedBusinesses } from "@/data/businesses";
 
-type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit" | "photos";
+type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit" | "photos" | "stamps";
 
 // Post templates are a Premier perk, delivered to the business by the team —
 // never shown on the public site.
@@ -97,6 +97,7 @@ export default function AdminPage() {
         businesses: null, // download/upload UI only, nothing to prefetch
         toolkit: null, // renders from seed data, nothing to prefetch
         photos: "/api/admin/businesses?format=json",
+        stamps: "/api/admin/businesses?format=json",
       };
       const path = paths[which];
       if (path) {
@@ -114,7 +115,7 @@ export default function AdminPage() {
         if (which === "inquiries") setInquiries(data.inquiries);
         else if (which === "signups") setSignups(data.signups);
         else if (which === "events") setEvents(data.events);
-        else if (which === "photos") setBusinessList(data.businesses);
+        else if (which === "photos" || which === "stamps") setBusinessList(data.businesses);
       }
       setTab(which);
       setLoggedIn(true);
@@ -152,6 +153,27 @@ export default function AdminPage() {
   // CSV upload state
   const [csvBusy, setCsvBusy] = useState(false);
   const [csvResult, setCsvResult] = useState("");
+
+  // Stamp QR state
+  const [stampSearch, setStampSearch] = useState("");
+  const [stampBusy, setStampBusy] = useState(false);
+  const [stampQr, setStampQr] = useState<{ businessName: string; url: string; qr: string } | null>(null);
+
+  async function loadStampQr(businessId: string) {
+    setStampBusy(true);
+    setStampQr(null);
+    setError("");
+    try {
+      const res = await authFetch(`/api/admin/stamp-qr?business_id=${encodeURIComponent(businessId)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setStampQr({ businessName: data.business_name, url: data.stamp_url, qr: data.qr });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not build the QR code.");
+    } finally {
+      setStampBusy(false);
+    }
+  }
 
   // Photo upload state
   const [photoBusinessId, setPhotoBusinessId] = useState("");
@@ -300,6 +322,7 @@ export default function AdminPage() {
             ["businesses", "📊", "Update Businesses", "Download, edit in Excel, re-upload"],
             ["photos", "📸", "Add Photos", "Swap the placeholder art for real photos"],
             ["toolkit", "🧰", "Partner Toolkit", "Post templates to email paying partners"],
+            ["stamps", "🪪", "Stamp QR Codes", "Print passport stamp codes for partner counters"],
           ] as [Tab, string, string, string][]
         ).map(([key, icon, label, hint]) => (
           <button
@@ -579,6 +602,83 @@ export default function AdminPage() {
               One photo per business — uploading a new one replaces the old one. It becomes
               the picture shown on the listing card and the business page.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* STAMP QR CODES */}
+      {tab === "stamps" && !loading && (
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-xl border border-black/10 bg-white p-6">
+            <p className="font-display text-lg font-bold text-tombstone-dark">
+              Pick a stamp location
+            </p>
+            <p className="mt-2 text-sm text-tombstone-dark/70">
+              Every business can be a stamp location — pick one to get its unique QR code,
+              then print it and post it at the counter. Visitors scan it on-site to add the
+              stamp to their digital passport.
+            </p>
+            <input
+              type="text"
+              placeholder="Search by name…"
+              value={stampSearch}
+              onChange={(e) => setStampSearch(e.target.value)}
+              className={`${input} mt-4`}
+            />
+            <div className="mt-3 max-h-80 overflow-y-auto rounded-md border border-black/10">
+              {businessList
+                .filter((b) => b.name.toLowerCase().includes(stampSearch.toLowerCase()))
+                .map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => loadStampQr(b.id)}
+                    className="flex w-full items-center justify-between border-b border-black/5 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-tombstone-light"
+                  >
+                    <span>{b.name}</span>
+                    <span className="text-xs text-tombstone-dark/50">{b.category}</span>
+                  </button>
+                ))}
+              {businessList.length === 0 && (
+                <p className="p-3 text-sm text-tombstone-dark/50">No businesses found.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-black/10 bg-white p-6 text-center">
+            {stampBusy && <p className="text-sm text-tombstone-dark/60">Building QR code…</p>}
+            {!stampBusy && !stampQr && (
+              <p className="text-sm text-tombstone-dark/60">
+                Pick a business on the left — its printable QR code shows up here.
+              </p>
+            )}
+            {stampQr && (
+              <div>
+                <p className="font-display text-lg font-bold text-tombstone-dark">
+                  {stampQr.businessName}
+                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={stampQr.qr}
+                  alt={`Passport stamp QR code for ${stampQr.businessName}`}
+                  className="mx-auto mt-4 w-64 rounded-lg border border-black/10"
+                />
+                <p className="mt-3 break-all text-xs text-tombstone-dark/50">{stampQr.url}</p>
+                <div className="mt-4 flex justify-center gap-3">
+                  <a
+                    href={stampQr.qr}
+                    download={`stamp-qr-${stampQr.businessName.replace(/\W+/g, "-").toLowerCase()}.png`}
+                    className="rounded-md bg-tombstone-navy px-4 py-2 text-sm font-semibold text-white"
+                  >
+                    ⬇️ Download PNG
+                  </a>
+                </div>
+                <p className="mt-4 text-xs text-tombstone-dark/50">
+                  Print it on a rack card or counter placard. The code only works for this
+                  business — it can&apos;t be reused anywhere else.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

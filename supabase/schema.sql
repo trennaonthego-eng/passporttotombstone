@@ -122,6 +122,21 @@ create table if not exists town_events (
 );
 
 -- ---------------------------------------------------------------------------
+-- passport_stamps
+-- The stamp-collection loyalty program: one row per (visitor, business).
+-- Stamps are written only by the server API (service role) after it verifies
+-- the QR token, so there is no public insert policy — visitors can only read
+-- their own stamps.
+-- ---------------------------------------------------------------------------
+create table if not exists passport_stamps (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  business_id text not null references businesses(id),
+  created_at timestamptz default now(),
+  unique (user_id, business_id)
+);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- The site uses the anon key from the browser/server, so:
 --   * anyone may read businesses
@@ -134,6 +149,13 @@ alter table partnerships enable row level security;
 alter table event_inquiries enable row level security;
 alter table itineraries enable row level security;
 alter table town_events enable row level security;
+alter table passport_stamps enable row level security;
+
+-- Visitors can see their own stamps (the /passport page reads them from the
+-- browser with the anon key). Inserts happen only through the stamp API using
+-- the service-role key after the QR token checks out.
+create policy "owner read own stamps"
+  on passport_stamps for select using (auth.uid() = user_id);
 
 -- Anyone can read town events (they render on the public /calendar page).
 -- Writes happen only through the admin API using the service-role key.
