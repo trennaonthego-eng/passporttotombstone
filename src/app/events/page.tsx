@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import EventInquiryForm from "@/components/EventInquiryForm";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { getEventVenues } from "@/data/businesses";
@@ -59,10 +58,10 @@ export default function EventsPage() {
             event — so all you have to do is bring your group.
           </p>
           <a
-            href="#inquiry"
+            href="#contact"
             className="mt-8 inline-block rounded-md bg-tombstone-red px-8 py-3 font-semibold text-white transition hover:bg-tombstone-red/90"
           >
-            Tell Us About Your Event
+            Contact Us
           </a>
         </div>
       </section>
@@ -98,7 +97,7 @@ export default function EventsPage() {
                 )}
                 <p className="text-sm leading-relaxed text-tombstone-dark/80">{venue.story}</p>
                 <a
-                  href="#inquiry"
+                  href="#contact"
                   className="mt-auto pt-2 text-sm font-semibold text-tombstone-red hover:underline"
                 >
                   Inquire about this venue →
@@ -126,7 +125,7 @@ export default function EventsPage() {
                 the right rooms.
               </p>
               <a
-                href="#inquiry"
+                href="#contact"
                 className="mt-auto pt-2 text-sm font-semibold text-tombstone-red hover:underline"
               >
                 Inquire about town venues →
@@ -175,17 +174,22 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* INQUIRY FORM */}
-      <section id="inquiry" className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-        <h2 className="font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
-          Tell Us About Your Event
-        </h2>
-        <p className="mt-3 text-base text-tombstone-dark/75">
-          Share the basics and we&apos;ll take it from there — venue matching, logistics,
-          local coordination, and marketing support.
-        </p>
-        <div className="mt-8">
-          <EventInquiryForm />
+      {/* CONTACT */}
+      <section id="contact" className="py-20">
+        <div className="mx-auto max-w-2xl px-4 text-center sm:px-6">
+          <h2 className="font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
+            Bring Your Event to Tombstone
+          </h2>
+          <p className="mt-4 text-base text-tombstone-dark/75">
+            Tell us what you&apos;re planning — venue matching, logistics, and local
+            coordination — and we&apos;ll take it from there.
+          </p>
+          <a
+            href="mailto:events@passporttotombstone.com?subject=Event%20Inquiry"
+            className="mt-8 inline-block rounded-md bg-tombstone-red px-8 py-3 font-semibold text-white transition hover:bg-tombstone-red/90"
+          >
+            Contact Us
+          </a>
         </div>
       </section>
     </>

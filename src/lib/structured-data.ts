@@ -183,6 +183,34 @@ export function localBusinessSchema(business: Business) {
   };
 }
 
+export function featuredEventSchema(event: {
+  title: string;
+  tagline: string;
+  startIso: string;
+  endIso: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.tagline,
+    startDate: event.startIso,
+    endDate: event.endIso,
+    eventStatus: "https://schema.org/EventScheduled",
+    location: {
+      "@type": "Place",
+      name: "Downtown Tombstone",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Tombstone",
+        addressRegion: "AZ",
+        postalCode: "85638",
+        addressCountry: "US",
+      },
+    },
+  };
+}
+
 export function breadcrumbSchema(items: { name: string; path: string }[]) {
   return {
     "@context": "https://schema.org",

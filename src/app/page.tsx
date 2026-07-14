@@ -1,15 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import BusinessCard from "@/components/BusinessCard";
+import FeaturedEventBanner from "@/components/FeaturedEventBanner";
 import InteractiveGuideSection from "@/components/InteractiveGuideSection";
 import JsonLd from "@/components/JsonLd";
 import NewsletterForm from "@/components/NewsletterForm";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 import { featuredHomepageBusinesses, getByCategory } from "@/data/businesses";
 import { townEvents } from "@/data/events";
+import { featuredEvent } from "@/data/featured-event";
 import {
   HOMEPAGE_FAQ,
   faqPageSchema,
+  featuredEventSchema,
   organizationSchema,
   touristDestinationSchema,
   webSiteSchema,
@@ -76,6 +79,7 @@ export default function HomePage() {
       <JsonLd data={webSiteSchema()} />
       <JsonLd data={touristDestinationSchema()} />
       <JsonLd data={faqPageSchema()} />
+      <JsonLd data={featuredEventSchema(featuredEvent)} />
 
       {/* 1. HERO */}
       <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-tombstone-dark">
@@ -180,6 +184,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <FeaturedEventBanner />
 
       <InteractiveGuideSection />
 
