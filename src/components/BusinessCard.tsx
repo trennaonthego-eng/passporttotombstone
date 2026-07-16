@@ -8,7 +8,7 @@ import BusinessPhoto from "./BusinessPhoto";
 const TIER_BADGE: Record<Business["tier"], string | null> = {
   free: null,
   featured: "Featured",
-  premium_featured: "Premier Partner",
+  premium_featured: "Premium Partner",
   event_host: "Event Host",
 };
 

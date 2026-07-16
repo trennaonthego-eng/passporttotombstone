@@ -78,6 +78,9 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
+      // Lets partners enter launch promo codes (e.g. 50% off for 3 months)
+      // right on the Stripe checkout page.
+      allow_promotion_codes: true,
       customer_email: body.contact_email!.trim(),
       success_url: `${SITE_URL}/upgrade/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/upgrade?canceled=1&tier=${tier}`,

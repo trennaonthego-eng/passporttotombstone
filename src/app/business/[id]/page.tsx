@@ -201,6 +201,17 @@ export default async function BusinessDetailPage({
 
           </>
         )}
+
+        <p className="mt-14 border-t border-black/10 pt-6 text-sm text-tombstone-dark/60">
+          Own {business.name}?{" "}
+          <Link
+            href={`/update-listing?business=${business.id}`}
+            className="font-semibold text-tombstone-red hover:underline"
+          >
+            Update your address, hours, or contact info
+          </Link>{" "}
+          — free for every listing.
+        </p>
       </section>
     </>
   );

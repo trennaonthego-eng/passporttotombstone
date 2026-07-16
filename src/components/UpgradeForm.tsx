@@ -11,7 +11,7 @@ interface BusinessOption {
 
 const TIER_OPTIONS: { value: UpgradeTier; label: string; price: string }[] = [
   { value: "featured", label: "Featured Story Partner", price: "$49/month" },
-  { value: "premier", label: "Premier Story Partner", price: "$199/month" },
+  { value: "premier", label: "Premium Story Partner", price: "$99/month" },
   { value: "newsletter_sponsor", label: "Newsletter Sponsor", price: "$25/month" },
 ];
 
@@ -32,6 +32,9 @@ export default function UpgradeForm({
   const [businessName, setBusinessName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  // Optional listing-info updates collected at signup; they go into the
+  // review queue (approved from /admin), never straight to the live site.
+  const [listingInfo, setListingInfo] = useState({ address: "", hours: "", website: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
 
@@ -67,6 +70,21 @@ export default function UpgradeForm({
     }
 
     setStatus("loading");
+
+    // File any listing-info updates first (they queue for review either way —
+    // a checkout hiccup shouldn't lose them). Best-effort: don't block payment.
+    if (businessId && Object.values(listingInfo).some((v) => v.trim())) {
+      fetch("/api/listing-update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_id: businessId,
+          contact_email: contactEmail.trim(),
+          ...listingInfo,
+        }),
+      }).catch(() => {});
+    }
+
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -198,6 +216,41 @@ export default function UpgradeForm({
         </div>
       </div>
 
+      {needsExistingListing && businessId && (
+        <div className="rounded-lg border border-black/10 bg-tombstone-light/50 p-4">
+          <p className="text-sm font-semibold text-tombstone-dark">
+            Update your listing info while you&apos;re here (optional)
+          </p>
+          <p className="mt-1 text-xs text-tombstone-dark/60">
+            We review updates before they go live. You can also update anytime at{" "}
+            <span className="font-semibold">/update-listing</span> — free tier included.
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <input
+              type="text"
+              value={listingInfo.address}
+              onChange={(e) => setListingInfo((f) => ({ ...f, address: e.target.value }))}
+              placeholder="Street address"
+              className={input}
+            />
+            <input
+              type="text"
+              value={listingInfo.hours}
+              onChange={(e) => setListingInfo((f) => ({ ...f, hours: e.target.value }))}
+              placeholder="Open hours"
+              className={input}
+            />
+            <input
+              type="text"
+              value={listingInfo.website}
+              onChange={(e) => setListingInfo((f) => ({ ...f, website: e.target.value }))}
+              placeholder="Website"
+              className={input}
+            />
+          </div>
+        </div>
+      )}
+
       {error && <p className="text-sm text-tombstone-red">{error}</p>}
 
       <button
@@ -209,7 +262,7 @@ export default function UpgradeForm({
       </button>
       <p className="text-xs text-tombstone-dark/50">
         You&apos;ll pay securely through Stripe. Subscriptions are month-to-month — cancel
-        anytime.
+        anytime. Have a promo code? You can enter it on the checkout page.
       </p>
     </form>
   );

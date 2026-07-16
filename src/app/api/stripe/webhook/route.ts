@@ -12,7 +12,7 @@ import { getAdminSupabase } from "@/lib/supabase-admin";
 
 const MONTHLY_PRICE: Record<UpgradeTier, number> = {
   featured: 49,
-  premier: 199,
+  premier: 99,
   newsletter_sponsor: 25,
 };
 

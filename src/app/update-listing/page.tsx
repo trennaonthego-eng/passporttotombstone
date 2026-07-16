@@ -1,31 +1,24 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
-import UpgradeForm from "@/components/UpgradeForm";
+import ListingUpdateForm from "@/components/ListingUpdateForm";
 import { getAllBusinesses } from "@/lib/business-data";
-import type { UpgradeTier } from "@/lib/stripe";
 import { breadcrumbSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "Upgrade Your Partnership",
+  title: "Update Your Listing",
   description:
-    "Upgrade to a Featured or Premium Story Partner listing, or sponsor the newsletter — pay securely and go live within minutes.",
+    "Own a Tombstone business? Update your address, hours, phone, email, or website in the Passport to Tombstone directory — free for every listing.",
 };
 
 // Re-render every 5 minutes so newly added businesses show up in the picker.
 export const revalidate = 300;
 
-const VALID_TIERS: UpgradeTier[] = ["featured", "premier", "newsletter_sponsor"];
-
-export default async function UpgradePage({
+export default async function UpdateListingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tier?: string; canceled?: string }>;
+  searchParams: Promise<{ business?: string }>;
 }) {
   const params = await searchParams;
-  const initialTier: UpgradeTier = VALID_TIERS.includes(params.tier as UpgradeTier)
-    ? (params.tier as UpgradeTier)
-    : "featured";
-
   const businesses = (await getAllBusinesses())
     .map((b) => ({ id: b.id, name: b.name, category: b.category }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -35,34 +28,29 @@ export default async function UpgradePage({
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
-          { name: "Partnerships", path: "/partnerships" },
-          { name: "Upgrade", path: "/upgrade" },
+          { name: "Update Your Listing", path: "/update-listing" },
         ])}
       />
 
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-20 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1d150f] to-[#4c2f1c] py-16 text-white">
         <div className="absolute inset-0 [background:radial-gradient(ellipse_60%_60%_at_50%_30%,rgba(193,153,63,0.2),transparent_70%)]" />
         <div className="relative mx-auto max-w-2xl px-4 text-center sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-tombstone-gold sm:text-sm">
-            Partnerships
+            For Tombstone Businesses
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
-            Upgrade Your Partnership
+            Update Your Listing
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-white/80">
-            Pick a tier, tell us who you are, and pay securely — your listing upgrades
-            automatically once payment goes through.
+            Keep your address, hours, phone, email, and website current — free for every
+            listing, no partnership required. We review each update before it goes live.
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
         <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm sm:p-8">
-          <UpgradeForm
-            businesses={businesses}
-            initialTier={initialTier}
-            canceled={params.canceled === "1"}
-          />
+          <ListingUpdateForm businesses={businesses} initialBusinessId={params.business} />
         </div>
       </section>
     </>

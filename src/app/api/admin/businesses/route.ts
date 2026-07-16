@@ -31,14 +31,15 @@ const CSV_COLUMNS = [
 const TIER_TO_INTERNAL: Record<string, string> = {
   free: "free",
   featured: "featured",
-  premier: "premium_featured",
+  premium: "premium_featured",
+  premier: "premium_featured", // old name, still accepted
   premium_featured: "premium_featured",
 };
 const TIER_TO_CSV: Record<string, string> = {
   free: "free",
   featured: "featured",
-  premium_featured: "premier",
-  event_host: "premier",
+  premium_featured: "premium",
+  event_host: "premium",
 };
 
 const VALID_CATEGORIES = new Set(["Lodging", "Dining", "Attractions", "Shopping", "Services"]);
@@ -180,7 +181,7 @@ export async function POST(request: Request) {
     if (category && !VALID_CATEGORIES.has(category))
       problems.push(`Row ${i + 2}: category "${category}" isn't one of Lodging/Dining/Attractions/Shopping/Services.`);
     if (tierRaw && !TIER_TO_INTERNAL[tierRaw])
-      problems.push(`Row ${i + 2}: tier "${tierRaw}" isn't one of free/featured/premier.`);
+      problems.push(`Row ${i + 2}: tier "${tierRaw}" isn't one of free/featured/premium.`);
     return {
       id,
       name,

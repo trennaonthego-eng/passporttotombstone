@@ -20,8 +20,8 @@ const TIERS = [
       "Appears on your category page",
       "Basic contact info",
     ],
-    cta: "Get Listed Free",
-    href: "#contact",
+    cta: "Get Listed / Update Info",
+    href: "/update-listing",
   },
   {
     icon: "⭐",
@@ -39,8 +39,8 @@ const TIERS = [
   },
   {
     icon: "👑",
-    name: "Premier",
-    price: "$199/month",
+    name: "Premium",
+    price: "$99/month",
     highlight: true,
     features: [
       "Everything in Featured, plus:",
@@ -50,7 +50,7 @@ const TIERS = [
       "Google Business Profile post template (auto-generated)",
       "Featured in all 4 monthly newsletters",
     ],
-    cta: "Go Premier",
+    cta: "Go Premium",
     href: "/upgrade?tier=premier",
   },
   {
@@ -73,8 +73,8 @@ const FAQ = [
     a: "It means we tell your story, not just list your address. Every partner gets a narrative listing that explains why your business matters to Tombstone — written to attract visitors who care about authentic experiences, not just the cheapest option. The free tier gets you in the Passport; paid tiers put your story in front of more people, more often.",
   },
   {
-    q: "What does the Premier landing page include?",
-    a: "A dedicated page on this site telling your full story — narrative, photo gallery, hours, contact details, and links — plus auto-generated social media and Google Business Profile post templates you can reuse. Premier partners also appear in the event-type pages (weddings, filming, retreats, conferences) where their venue or service fits.",
+    q: "What does the Premium landing page include?",
+    a: "A dedicated page on this site telling your full story — narrative, photo gallery, hours, contact details, and links — plus auto-generated social media and Google Business Profile post templates you can reuse. Premium partners also appear in the event-type pages (weddings, filming, retreats, conferences) where their venue or service fits.",
   },
   {
     q: "Will I make more money?",

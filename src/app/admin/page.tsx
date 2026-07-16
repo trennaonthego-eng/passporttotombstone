@@ -4,7 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import CopyBlock from "@/components/CopyBlock";
 import { businesses as seedBusinesses } from "@/data/businesses";
 
-type Tab = "inquiries" | "signups" | "events" | "businesses" | "toolkit" | "photos" | "stamps";
+type Tab =
+  | "inquiries"
+  | "signups"
+  | "events"
+  | "businesses"
+  | "toolkit"
+  | "photos"
+  | "stamps"
+  | "updates";
 
 // Post templates are a Premier perk, delivered to the business by the team —
 // never shown on the public site.
@@ -45,6 +53,20 @@ interface TownEvent {
   time_label: string;
   venue: string;
   address: string;
+}
+
+interface ListingUpdate {
+  id: string;
+  business_id: string | null;
+  business_name: string;
+  address: string | null;
+  hours: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  note: string | null;
+  contact_email: string;
+  created_at: string;
 }
 
 interface BusinessListItem {
@@ -98,6 +120,7 @@ export default function AdminPage() {
         toolkit: null, // renders from seed data, nothing to prefetch
         photos: "/api/admin/businesses?format=json",
         stamps: "/api/admin/businesses?format=json",
+        updates: "/api/admin/listing-updates",
       };
       const path = paths[which];
       if (path) {
@@ -116,6 +139,7 @@ export default function AdminPage() {
         else if (which === "signups") setSignups(data.signups);
         else if (which === "events") setEvents(data.events);
         else if (which === "photos" || which === "stamps") setBusinessList(data.businesses);
+        else if (which === "updates") setListingUpdates(data.updates);
       }
       setTab(which);
       setLoggedIn(true);
@@ -153,6 +177,23 @@ export default function AdminPage() {
   // CSV upload state
   const [csvBusy, setCsvBusy] = useState(false);
   const [csvResult, setCsvResult] = useState("");
+
+  // Listing-update review state
+  const [listingUpdates, setListingUpdates] = useState<ListingUpdate[]>([]);
+
+  async function reviewUpdate(id: string, action: "approve" | "reject") {
+    setError("");
+    const res = await authFetch("/api/admin/listing-updates", {
+      method: "PATCH",
+      body: JSON.stringify({ id, action }),
+    });
+    if (res.ok) {
+      setListingUpdates((list) => list.filter((u) => u.id !== id));
+    } else {
+      const data = await res.json();
+      setError(data.error ?? "Could not update.");
+    }
+  }
 
   // Stamp QR state
   const [stampSearch, setStampSearch] = useState("");
@@ -323,6 +364,7 @@ export default function AdminPage() {
             ["photos", "📸", "Add Photos", "Swap the placeholder art for real photos"],
             ["toolkit", "🧰", "Partner Toolkit", "Post templates to email paying partners"],
             ["stamps", "🪪", "Stamp QR Codes", "Print passport stamp codes for partner counters"],
+            ["updates", "📥", "Listing Updates", "Approve info changes businesses send in"],
           ] as [Tab, string, string, string][]
         ).map(([key, icon, label, hint]) => (
           <button
@@ -603,6 +645,59 @@ export default function AdminPage() {
               the picture shown on the listing card and the business page.
             </p>
           </div>
+        </div>
+      )}
+
+      {/* LISTING UPDATES (review queue) */}
+      {tab === "updates" && !loading && (
+        <div className="mt-8 space-y-4">
+          {listingUpdates.length === 0 && (
+            <p className="text-sm text-tombstone-dark/60">
+              No pending updates. When a business submits new info (address, hours, phone,
+              email, website), it shows up here for approval before anything goes live.
+            </p>
+          )}
+          {listingUpdates.map((u) => (
+            <div key={u.id} className="rounded-xl border border-black/10 bg-white p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-display text-lg font-bold text-tombstone-dark">
+                    {u.business_name}
+                  </p>
+                  <p className="text-xs text-tombstone-dark/60">
+                    Submitted {new Date(u.created_at).toLocaleDateString()} by{" "}
+                    <a href={`mailto:${u.contact_email}`} className="text-tombstone-red underline">
+                      {u.contact_email}
+                    </a>
+                  </p>
+                  <dl className="mt-3 space-y-1 text-sm text-tombstone-dark/80">
+                    {u.address && <div><span className="font-semibold">Address:</span> {u.address}</div>}
+                    {u.hours && <div><span className="font-semibold">Hours:</span> {u.hours}</div>}
+                    {u.phone && <div><span className="font-semibold">Phone:</span> {u.phone}</div>}
+                    {u.email && <div><span className="font-semibold">Email:</span> {u.email}</div>}
+                    {u.website && <div><span className="font-semibold">Website:</span> {u.website}</div>}
+                    {u.note && <div><span className="font-semibold">Note:</span> {u.note}</div>}
+                  </dl>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => reviewUpdate(u.id, "approve")}
+                    className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800"
+                  >
+                    ✓ Approve & publish
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => reviewUpdate(u.id, "reject")}
+                    className="rounded-md border border-tombstone-red/40 px-4 py-2 text-sm font-semibold text-tombstone-red hover:bg-tombstone-red/10"
+                  >
+                    ✕ Reject
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

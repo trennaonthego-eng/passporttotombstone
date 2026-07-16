@@ -137,6 +137,29 @@ create table if not exists passport_stamps (
 );
 
 -- ---------------------------------------------------------------------------
+-- listing_updates
+-- Business-submitted info changes (address, hours, phone, email, website).
+-- Any business -- free tier included -- can submit; nothing goes live until
+-- it's approved from the /admin dashboard. Writes go through the public API
+-- using the service role, so no public policies here.
+-- ---------------------------------------------------------------------------
+create table if not exists listing_updates (
+  id uuid primary key default uuid_generate_v4(),
+  business_id text references businesses(id),
+  business_name text not null,
+  address text,
+  hours text,
+  phone text,
+  email text,
+  website text,
+  note text,
+  contact_email text not null,
+  status text default 'pending',  -- "pending" | "approved" | "rejected"
+  created_at timestamptz default now(),
+  reviewed_at timestamptz
+);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- The site uses the anon key from the browser/server, so:
 --   * anyone may read businesses
@@ -150,6 +173,7 @@ alter table event_inquiries enable row level security;
 alter table itineraries enable row level security;
 alter table town_events enable row level security;
 alter table passport_stamps enable row level security;
+alter table listing_updates enable row level security;
 
 -- Visitors can see their own stamps (the /passport page reads them from the
 -- browser with the anon key). Inserts happen only through the stamp API using

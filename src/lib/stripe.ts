@@ -30,7 +30,7 @@ export const TIER_PRICE_ENV: Record<UpgradeTier, string | undefined> = {
 
 export const TIER_LABELS: Record<UpgradeTier, string> = {
   featured: "Featured Story Partner ($49/month)",
-  premier: "Premier Story Partner ($199/month)",
+  premier: "Premium Story Partner ($99/month)",
   newsletter_sponsor: "Newsletter Sponsor ($25/month)",
 };
 

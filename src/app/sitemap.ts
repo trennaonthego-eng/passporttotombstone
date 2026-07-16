@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/passport`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/partnerships`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/upgrade`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/update-listing`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const businessRoutes: MetadataRoute.Sitemap = businesses.map((b) => ({
