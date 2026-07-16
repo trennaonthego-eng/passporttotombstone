@@ -54,7 +54,7 @@ export const eventPages: EventPageDef[] = [
       {
         heading: "Venues Perfect for Weddings",
         blurb: "Contact venues directly — every card links to the venue's own phone and website.",
-        businessIds: ["lodging_001", "lodging_026", "attractions_001", "attractions_002", "attractions_017"],
+        businessIds: ["lodging_026", "attractions_001", "attractions_002", "attractions_017"],
       },
       {
         heading: "Historic Churches",
