@@ -78,7 +78,7 @@ export const eventPages: EventPageDef[] = [
       },
     ],
     closingNote:
-      "Got married in Tombstone? We'd love to feature real Tombstone weddings — share your photos and story at events@passporttotombstone.com.",
+      "Got married in Tombstone? We'd love to feature real Tombstone weddings — share your photos and story at trennaonthego@gmail.com.",
   },
   {
     slug: "filming",

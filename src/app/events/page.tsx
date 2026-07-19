@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import PlaceholderPhoto from "@/components/PlaceholderPhoto";
@@ -185,7 +186,7 @@ export default function EventsPage() {
             coordination — and we&apos;ll take it from there.
           </p>
           <a
-            href="mailto:events@passporttotombstone.com?subject=Event%20Inquiry"
+            href={`mailto:${CONTACT_EMAIL}?subject=Event%20Inquiry`}
             className="mt-8 inline-block rounded-md bg-tombstone-red px-8 py-3 font-semibold text-white transition hover:bg-tombstone-red/90"
           >
             Contact Us

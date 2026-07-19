@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
@@ -203,7 +204,7 @@ export default function PartnershipsPage() {
             Passport.
           </p>
           <a
-            href="mailto:partners@passporttotombstone.com?subject=Partnership%20Inquiry"
+            href={`mailto:${CONTACT_EMAIL}?subject=Partnership%20Inquiry`}
             className="mt-8 inline-block rounded-md bg-tombstone-red px-8 py-3 font-semibold text-white transition hover:bg-tombstone-red/90"
           >
             Contact Us

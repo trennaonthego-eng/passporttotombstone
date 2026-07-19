@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import Link from "next/link";
 
 export default function Footer() {
@@ -36,7 +37,7 @@ export default function Footer() {
           <p className="mt-4 max-w-xs text-xs text-white/50">
             Need to edit your business info, or add a business that isn&apos;t on our list?{" "}
             <a
-              href="mailto:events@passporttotombstone.com?subject=Business%20Listing%20Request"
+              href={`mailto:${CONTACT_EMAIL}?subject=Business%20Listing%20Request`}
               className="font-semibold text-tombstone-gold hover:text-white"
             >
               Contact us

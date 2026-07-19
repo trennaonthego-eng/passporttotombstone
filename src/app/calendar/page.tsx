@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
@@ -189,7 +190,7 @@ export default async function CalendarPage() {
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
-              href="mailto:events@passporttotombstone.com?subject=Tombstone%20Event%20Submission"
+              href={`mailto:${CONTACT_EMAIL}?subject=Tombstone%20Event%20Submission`}
               className="rounded-md bg-tombstone-red px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-tombstone-red/90"
             >
               Submit an Event

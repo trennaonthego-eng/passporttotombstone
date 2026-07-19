@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
@@ -231,7 +232,7 @@ export default function LiveHerePage() {
             the life you&apos;re picturing? Send a note — a real person answers.
           </p>
           <a
-            href="mailto:events@passporttotombstone.com?subject=Thinking%20about%20living%20in%20Tombstone"
+            href={`mailto:${CONTACT_EMAIL}?subject=Thinking%20about%20living%20in%20Tombstone`}
             className="mt-6 inline-block rounded-full bg-tombstone-navy px-8 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:bg-tombstone-dark"
           >
             Contact Us
