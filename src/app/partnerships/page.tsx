@@ -33,7 +33,7 @@ const TIERS = [
       "Everything in Free, plus:",
       "⭐ Star badge on your listing card",
       "Dedicated landing page with your full story",
-      "Passport stamp QR code — visitors collect a stamp at your counter",
+      "Passport stamp QR code — visitors collect a stamp at your counter (coming soon)",
       "Featured in 2 newsletters per month",
     ],
     cta: "Go Featured",
