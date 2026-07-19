@@ -63,7 +63,7 @@ export const eventPages: EventPageDef[] = [
       },
       {
         heading: "Reception Dining & Catering",
-        businessIds: ["dining_001", "dining_004", "dining_008"],
+        businessIds: ["dining_004", "dining_001", "dining_008"],
       },
       {
         heading: "Photography",
