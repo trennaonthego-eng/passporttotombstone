@@ -103,7 +103,7 @@ export const EVENTS_PAGE_FAQ = [
   {
     question: "How many people can Tombstone venues accommodate?",
     answer:
-      "Tombstone venues range from intimate historic buildings to open-air arenas. Silver Spur Homestead hosts up to 50 guests, Tombstone Monument Guest Ranch up to 100, The Saloon Theatre up to 150, the O.K. Corral up to 200, and The Shootout Arena up to 300. Combined with town lodging, Tombstone can host groups of 50–500+ across multiple venues.",
+      "Tombstone venues range from intimate historic buildings to open-air arenas. Tombstone Monument Guest Ranch hosts up to 100 guests, The Saloon Theatre up to 150, the O.K. Corral up to 200, and The Shootout Arena up to 300. Combined with town lodging, Tombstone can host groups of 50–500+ across multiple venues.",
   },
   {
     question: "What types of events can I host in Tombstone?",

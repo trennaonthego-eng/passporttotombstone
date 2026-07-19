@@ -107,7 +107,7 @@ export const eventPages: EventPageDef[] = [
       },
       {
         heading: "Ranches & Open Land",
-        businessIds: ["lodging_001", "lodging_026"],
+        businessIds: ["lodging_026"],
       },
       {
         heading: "Cast & Crew Lodging",
@@ -151,7 +151,7 @@ export const eventPages: EventPageDef[] = [
       {
         heading: "Retreat Venues",
         blurb: "Contact venues directly for group rates and availability.",
-        businessIds: ["dining_014", "lodging_001", "lodging_026", "attractions_017"],
+        businessIds: ["dining_014", "lodging_026", "attractions_017"],
       },
       {
         heading: "Team Activities",
@@ -197,7 +197,7 @@ export const eventPages: EventPageDef[] = [
       {
         name: "3-Day Leadership Retreat",
         steps: [
-          "Day 1: arrive, glamping check-in at Silver Spur Homestead, sunset session",
+          "Day 1: arrive, check in at Tombstone Monument Guest Ranch, sunset session",
           "Day 2: strategy morning, Outlaw Zipline + mine tour afternoon, saloon dinner",
           "Day 3: Boothill walk, ghost tour debrief night, closing dinner",
         ],
@@ -229,7 +229,7 @@ export const eventPages: EventPageDef[] = [
         heading: "Conference Venues",
         blurb:
           "For historic town halls like Schieffelin Hall, coordinate through the City of Tombstone below.",
-        businessIds: ["dining_014", "attractions_017", "lodging_001", "lodging_026", "services_009"],
+        businessIds: ["dining_014", "attractions_017", "lodging_026", "services_009"],
       },
       {
         heading: "Lodging for Attendees",
