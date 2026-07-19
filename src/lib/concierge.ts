@@ -111,22 +111,46 @@ function hintedCategoryFor(message: string): string | undefined {
  * stay" or "what should I do" rarely shares literal words with business
  * copy, so a detected category hint (stay → Lodging) pulls top businesses
  * from that category directly instead of relying on keyword overlap alone. */
+// Paid-partner priority: when the Marshal (or the trip planner it feeds)
+// recommends businesses, Premium partners list first, then Featured, then
+// free — a paid perk, applied as a tiebreak within relevance.
+const TIER_RANK: Record<string, number> = {
+  premium_featured: 0,
+  event_host: 0,
+  featured: 1,
+  free: 2,
+};
+
+function tierRank(businessId: string): number {
+  const b = businesses.find((x) => x.id === businessId);
+  return b ? (TIER_RANK[b.tier] ?? 2) : 2;
+}
+
 function getMatches(message: string, limit: number): ConciergeMatch[] {
   const keywordMatches = findMatches(message, limit);
   const hintedCategory = hintedCategoryFor(message);
-  if (!hintedCategory) return keywordMatches;
 
   const seen = new Set(keywordMatches.map((m) => m.item.id));
-  const categoryMatches: ConciergeMatch[] = businesses
-    .filter((b) => b.category === hintedCategory && !seen.has(b.id))
-    .slice(0, limit - keywordMatches.length)
-    .map((b) => ({
-      item: { id: b.id, kind: "business", name: b.name, category: b.category },
-      score: 0,
-      blurb: b.story,
-    }));
+  const categoryMatches: ConciergeMatch[] = !hintedCategory
+    ? []
+    : businesses
+        .filter((b) => b.category === hintedCategory && !seen.has(b.id))
+        .sort((a, b) => (TIER_RANK[a.tier] ?? 2) - (TIER_RANK[b.tier] ?? 2))
+        .slice(0, limit - keywordMatches.length)
+        .map((b) => ({
+          item: { id: b.id, kind: "business", name: b.name, category: b.category },
+          score: 0,
+          blurb: b.story,
+        }));
 
-  return [...keywordMatches, ...categoryMatches].slice(0, limit);
+  return [...keywordMatches, ...categoryMatches]
+    .sort((a, b) => {
+      // Events have no tier; keep them ordered by relevance among themselves.
+      const rankA = a.item.kind === "business" ? tierRank(a.item.id) : 1;
+      const rankB = b.item.kind === "business" ? tierRank(b.item.id) : 1;
+      return rankA - rankB || b.score - a.score;
+    })
+    .slice(0, limit);
 }
 
 // What this product actually is — the concierge needs to know this about

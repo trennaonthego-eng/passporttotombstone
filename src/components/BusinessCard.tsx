@@ -7,8 +7,8 @@ import BusinessPhoto from "./BusinessPhoto";
 
 const TIER_BADGE: Record<Business["tier"], string | null> = {
   free: null,
-  featured: "Featured",
-  premium_featured: "Premium Partner",
+  featured: "⭐ Featured",
+  premium_featured: "👑 Premium Partner",
   event_host: "Event Host",
 };
 
@@ -58,9 +58,9 @@ export default function BusinessCard({ business }: { business: Business }) {
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-sm">
           {/* Detail pages stay live for every business (AI SEO), but the link
-              is a paid perk: premier gets the full profile, everyone else
-              points to their own website. */}
-          {business.tier === "premium_featured" ? (
+              is a paid perk: Featured and Premium get the full profile link,
+              free listings point to their own website. */}
+          {business.tier === "premium_featured" || business.tier === "featured" ? (
             <Link href={`/business/${business.id}`} className="font-semibold text-tombstone-red hover:underline">
               View Full Profile →
             </Link>

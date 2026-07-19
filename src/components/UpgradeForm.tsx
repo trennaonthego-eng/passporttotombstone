@@ -262,7 +262,8 @@ export default function UpgradeForm({
       </button>
       <p className="text-xs text-tombstone-dark/50">
         You&apos;ll pay securely through Stripe. Subscriptions are month-to-month — cancel
-        anytime. Have a promo code? You can enter it on the checkout page.
+        anytime. ☀️ Summer special: enter code <span className="font-bold">SUMMER50</span> on
+        the checkout page for 50% off every month through November.
       </p>
     </form>
   );

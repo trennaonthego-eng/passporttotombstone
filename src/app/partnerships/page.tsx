@@ -30,9 +30,10 @@ const TIERS = [
     highlight: false,
     features: [
       "Everything in Free, plus:",
-      "Featured badge on your listing",
-      "Featured in 2 monthly newsletters",
-      "Homepage rotation in \"Featured Businesses\"",
+      "⭐ Star badge on your listing card",
+      "Dedicated landing page with your full story",
+      "Passport stamp QR code — visitors collect a stamp at your counter",
+      "Featured in 2 newsletters per month",
     ],
     cta: "Go Featured",
     href: "/upgrade?tier=featured",
@@ -44,11 +45,15 @@ const TIERS = [
     highlight: true,
     features: [
       "Everything in Featured, plus:",
-      "Dedicated landing page with full story",
-      "Photo gallery",
-      "Social media post template (auto-generated)",
-      "Google Business Profile post template (auto-generated)",
-      "Featured in all 4 monthly newsletters",
+      "👑 Premium badge + top placement on your category page",
+      "The Marshal (our AI guide) recommends you first",
+      "Priority in visitor trip-planner suggestions",
+      "Featured in all 4 newsletters per month",
+      "2 blog posts about your business (great for Google & AI search)",
+      "Homepage rotation in \"Featured Businesses\"",
+      "Photo gallery on your landing page",
+      "Placement on event pages (weddings, filming, retreats)",
+      "Monthly ready-to-post social & Google Business templates",
     ],
     cta: "Go Premium",
     href: "/upgrade?tier=premier",
@@ -107,6 +112,18 @@ export default function PartnershipsPage() {
             Every business in Tombstone is part of our story. Partner with us to help
             visitors discover what makes this town real—and bring more people through your
             doors.
+          </p>
+        </div>
+      </section>
+
+      {/* SUMMER SPECIAL BANNER */}
+      <section className="bg-tombstone-red py-4">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <p className="text-sm font-semibold text-white sm:text-base">
+            ☀️ <span className="uppercase tracking-widest">Summer Special</span> — 50% off
+            Featured &amp; Premium every month through November. Use code{" "}
+            <span className="rounded bg-white/20 px-2 py-0.5 font-mono font-bold">SUMMER50</span>{" "}
+            at checkout.
           </p>
         </div>
       </section>
