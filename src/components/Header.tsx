@@ -11,7 +11,8 @@ const NAV_LINKS = [
   { href: "/shopping", label: "Shopping" },
   { href: "/services", label: "Services" },
   { href: "/calendar", label: "Calendar" },
-  { href: "/passport", label: "My Passport" },
+  // "My Passport" (/passport) is hidden until the stamp program launches —
+  // re-add here when Trenna gives the go.
   { href: "/live", label: "Live Here" },
   { href: "/events", label: "Bring Your Event Here" },
   { href: "/partnerships", label: "Partner With Us" },
