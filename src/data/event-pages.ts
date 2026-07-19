@@ -169,7 +169,7 @@ export const eventPages: EventPageDef[] = [
       {
         heading: "Group Food & Beverage",
         categoryLink: { label: "Browse all dining", href: "/dining" },
-        businessIds: ["dining_001", "dining_004", "dining_007", "dining_008", "dining_012"],
+        businessIds: ["dining_004", "dining_001", "dining_007", "dining_008", "dining_012"],
       },
       {
         heading: "Group Lodging",
