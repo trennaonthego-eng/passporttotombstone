@@ -54,7 +54,7 @@ export const eventPages: EventPageDef[] = [
       {
         heading: "Venues Perfect for Weddings",
         blurb: "Contact venues directly — every card links to the venue's own phone and website.",
-        businessIds: ["lodging_026", "attractions_001", "attractions_002", "attractions_017"],
+        businessIds: ["dining_014", "lodging_026", "attractions_001", "attractions_002", "attractions_017"],
       },
       {
         heading: "Historic Churches",
@@ -103,7 +103,7 @@ export const eventPages: EventPageDef[] = [
         heading: "Locations Perfect for Filming",
         blurb:
           "The historic district itself — Allen Street, churches, and mines — plus venues built for staged action.",
-        businessIds: ["attractions_001", "attractions_002", "attractions_003", "attractions_005", "attractions_010"],
+        businessIds: ["dining_014", "attractions_001", "attractions_002", "attractions_003", "attractions_005", "attractions_010"],
       },
       {
         heading: "Ranches & Open Land",
@@ -151,7 +151,7 @@ export const eventPages: EventPageDef[] = [
       {
         heading: "Retreat Venues",
         blurb: "Contact venues directly for group rates and availability.",
-        businessIds: ["lodging_001", "lodging_026", "attractions_017"],
+        businessIds: ["dining_014", "lodging_001", "lodging_026", "attractions_017"],
       },
       {
         heading: "Team Activities",
@@ -229,7 +229,7 @@ export const eventPages: EventPageDef[] = [
         heading: "Conference Venues",
         blurb:
           "For historic town halls like Schieffelin Hall, coordinate through the City of Tombstone below.",
-        businessIds: ["attractions_017", "lodging_001", "lodging_026", "services_009"],
+        businessIds: ["dining_014", "attractions_017", "lodging_001", "lodging_026", "services_009"],
       },
       {
         heading: "Lodging for Attendees",
