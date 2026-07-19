@@ -33,6 +33,12 @@ const EVENT_SERVICES = [
     href: "/weddings",
     cta: "Plan Your Wedding",
   },
+  {
+    title: "Film & Production",
+    copy: "The real Old West, ready for your production. Authentic 1880s streets and buildings — a National Historic Landmark district, not a set — plus desert landscapes, working reenactment casts, and year-round shooting weather.",
+    href: "/filming",
+    cta: "Plan Your Production",
+  },
 ];
 
 export default function EventsPage() {
@@ -76,7 +82,7 @@ export default function EventsPage() {
           <h2 className="font-display text-3xl font-bold text-tombstone-navy sm:text-4xl">
             What We Host
           </h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {EVENT_SERVICES.map((svc) => (
               <div
                 key={svc.title}
