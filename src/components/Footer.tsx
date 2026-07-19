@@ -31,7 +31,18 @@ export default function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/events" className="hover:text-white">Bring Your Event Here</Link></li>
             <li><Link href="/partnerships" className="hover:text-white">Partnerships & Pricing</Link></li>
+            <li><Link href="/update-listing" className="hover:text-white">Update Your Listing</Link></li>
           </ul>
+          <p className="mt-4 max-w-xs text-xs text-white/50">
+            Need to edit your business info, or add a business that isn&apos;t on our list?{" "}
+            <a
+              href="mailto:events@passporttotombstone.com?subject=Business%20Listing%20Request"
+              className="font-semibold text-tombstone-gold hover:text-white"
+            >
+              Contact us
+            </a>
+            .
+          </p>
           <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/50">Follow</p>
           <ul className="mt-3 flex gap-4 text-sm">
             <li><a href="#" className="hover:text-white">Instagram</a></li>
