@@ -202,16 +202,20 @@ export default async function BusinessDetailPage({
           </>
         )}
 
-        <p className="mt-14 border-t border-black/10 pt-6 text-sm text-tombstone-dark/60">
-          Own {business.name}?{" "}
-          <Link
-            href={`/update-listing?business=${business.id}`}
-            className="font-semibold text-tombstone-red hover:underline"
-          >
-            Update your address, hours, or contact info
-          </Link>{" "}
-          — free for every listing.
-        </p>
+        {/* Hidden on Trenna's own listing — no point telling the owner of the
+            site to submit an update for review. */}
+        {business.id !== "services_007" && (
+          <p className="mt-14 border-t border-black/10 pt-6 text-sm text-tombstone-dark/60">
+            Own {business.name}?{" "}
+            <Link
+              href={`/update-listing?business=${business.id}`}
+              className="font-semibold text-tombstone-red hover:underline"
+            >
+              Update your address, hours, or contact info
+            </Link>{" "}
+            — free for every listing.
+          </p>
+        )}
       </section>
     </>
   );

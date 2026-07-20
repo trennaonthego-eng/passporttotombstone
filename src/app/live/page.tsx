@@ -214,8 +214,16 @@ export default function LiveHerePage() {
               href="/business/services_007"
               className="w-full rounded-full bg-tombstone-red px-8 py-3 text-sm font-semibold uppercase tracking-widest text-white shadow-lg shadow-black/30 transition hover:bg-[#b8532e] sm:w-auto"
             >
-              Meet Team Franko
+              Work With Trenna
             </Link>
+            <a
+              href="https://discoverazrealty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full rounded-full border border-tombstone-gold/70 px-8 py-3 text-sm font-semibold uppercase tracking-widest text-tombstone-gold transition hover:bg-tombstone-gold hover:text-tombstone-dark sm:w-auto"
+            >
+              DiscoverAZRealty.com
+            </a>
           </div>
           <p className="mt-6 text-sm text-white/60">
             No pressure, no pitch — questions about the market are welcome any time.
