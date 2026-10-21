@@ -25,22 +25,22 @@ Placement: 13:15 to 14:00, over the recap of outputs/revenue-agent-demo.md.
 
 ### Follow-Up Sequence
 
-**Email 1 (immediately): Your Revenue Agent template**
+**Email 1 (immediately): Your Revenue Agent template (start here)**
 - Core idea: Deliver the files and give a 10-minute first run.
 - Body: "Here's the template from the video: the 4 agent files, the business-brief template, the runbook, and the coordinator prompt. Start here: 1) Copy the agent files into `.claude/agents/`. 2) Write your idea into `business-brief.md`, one specific niche, not 'a coaching business.' 3) Paste the coordinator prompt into Claude Code. You'll get a market signal, an offer, content angles, and a conversion system, in that order. Read every file as it lands."
 - CTA: Download the template.
 
-**Email 2 (Day 1): Edit one line, not everything**
+**Email 2 (Day 1): Change one line. Everything downstream changes.**
 - Core idea: The human review gate. One edit flows downstream.
 - Body: "In the video I changed one line in the offer file, and the angles and emails inherited it. That's the point of a chain. Open your offer-architect output and check three things: is the audience narrow, is the outcome a deliverable, is the promise honest? Fix one line, then re-run content-angle-strategist and conversion-system-builder. Reply and tell me which line you changed."
 - CTA: Reply with the line you edited.
 
-**Email 3 (Day 3): Why one prompt isn't a system**
+**Email 3 (Day 3): Why your output sounds generic**
 - Core idea: Chain vs. one-off prompts, and the "generic AI" objection.
 - Body: "A single prompt gives you one answer. The chain gives you handoffs you can inspect. If your output sounds generic, the cause is usually vague input in business-brief.md, not the agents. Sharpen the niche and the buyer, and re-run. Compare the two runs side by side. That comparison is the skill."
 - CTA: Re-run with a sharper brief, then send me the before and after.
 
-**Email 4 (Day 5): Where people get stuck, and the workshop**
+**Email 4 (Day 5): Where people get stuck running this**
 - Core idea: Likely sticking points (Inference) and the workshop.
 - Body: "Common stuck points (Inference): picking an idea that's too broad, skipping the human edit, and not knowing how to adapt the files to your voice. That's what the live 'Build Your Revenue Agent Chain' workshop covers. You bring your own idea. You leave with your own stack run on it. Price: $97-$297 (Placeholder, creator to confirm)."
 - CTA: Reserve a workshop spot.
